@@ -1,7 +1,7 @@
-#Porque elegi Trackflow
+# Porque elegi Trackflow
 -Investigue que una empresa de logistica es la que mas me generaria conocimiento y experiencia de AI engineering transferible a otras industrias.
 
-##Los 2 departamentos con problemas mas interesantes
+## Los 2 departamentos con problemas mas interesantes
 - Atencion al cliente
     -Agente que resuelva automaticamente las consultas de seguimiento y estado de devoluciones
 - Logistica inversa
