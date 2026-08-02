@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Basic SEO and responsive metadata -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Get a Quote | Trackflow Fulfillment</title>
+    <meta
+      name="description"
+      content="Unlock your full delivery potential with Trackflow. Request a quote for dependable fulfillment and tracking support."
+    />
+
+    <meta property="og:title" content="Get a Quote | Trackflow Fulfillment" />
+    <meta
+      property="og:description"
+      content="Request a quote from Trackflow and discover flexible fulfillment support for growing e-commerce brands."
+    />
+    <meta property="og:type" content="website" />
+
+    <!-- Google Fonts: geometric sans serif family -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!-- Tailwind CSS v4 browser build -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="./page-behavior.js"></script>
+
+    <!-- Theme tokens for palette, typography, and shadows -->
+    <style>
+      :root {
+        --shadow-soft: 0 12px 28px rgba(16, 16, 16, 0.18);
+      }
+    </style>
+
+    <!-- Schema.org structured data for SEO -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Trackflow",
+        "url": "https://example.com",
+        "description": "Trackflow provides fulfillment services for growing e-commerce brands.",
+        "logo": "https://example.com/logo.png",
+        "sameAs": []
+      }
+    </script>
+  </head>
+  <body class="min-h-screen overflow-x-hidden bg-black text-white antialiased [font-family:Manrope,sans-serif]">
+    <!-- Decorative radial dot pattern background -->
+    <svg
+      class="pointer-events-none fixed inset-0 -z-10 h-full w-full opacity-20"
+      aria-hidden="true"
+      viewBox="0 0 1440 1200"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <pattern id="dotPattern" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1.5" fill="#d7dee3" />
+        </pattern>
+        <radialGradient id="dotFade" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(720 400) rotate(90) scale(700 900)">
+          <stop stop-color="black" stop-opacity="0" />
+          <stop offset="1" stop-color="black" stop-opacity="1" />
+        </radialGradient>
+      </defs>
+      <rect width="1440" height="1200" fill="url(#dotPattern)" />
+      <rect width="1440" height="1200" fill="url(#dotFade)" />
+    </svg>
+
+    <!-- Skip link for keyboard and assistive technology users -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-black"
+    >
+      Skip to main content
+    </a>
+
+    <!-- Header with brand link back to homepage -->
+    <header class="sticky inset-x-0 top-0 z-20" aria-label="Site header">
+      <nav class="flex w-full items-center justify-between bg-black/30 px-4 py-4 backdrop-blur-sm" aria-label="Secondary navigation">
+        <a href="./index.html" class="flex items-center gap-2 px-2 py-1" aria-label="Go back to homepage">
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white text-black" aria-hidden="true">
+            <i class="fa-solid fa-box"></i>
+          </span>
+          <span class="text-base font-extrabold tracking-wide text-white">TRACKFLOW</span>
+        </a>
+
+        <a
+          href="./index.html"
+          class="inline-flex items-center gap-2 rounded-full border border-white/35 bg-black/30 px-4 py-2 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]"
+        >
+          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+          Back home
+        </a>
+      </nav>
+    </header>
+
+    <!-- Main page content -->
+    <main id="main-content" class="relative min-h-screen" aria-label="Get a quote page content">
+      <!-- Full width tracking background image -->
+      <img
+        src="https://images.unsplash.com/photo-1605745341112-85968b19335b?auto=format&fit=crop&w=1920&q=80"
+        alt="Tracking and logistics operations background"
+        class="absolute inset-0 h-full w-full object-cover"
+        loading="eager"
+      />
+      <div class="absolute inset-0 bg-black/45" aria-hidden="true"></div>
+
+      <!-- Centered quote form container -->
+      <section class="relative z-10 flex min-h-screen items-center justify-center px-5 py-24" aria-labelledby="quote-title">
+        <div class="w-full max-w-xl rounded-3xl border border-white/80 bg-black/45 p-6 shadow-[var(--shadow-soft)] backdrop-blur-md sm:p-8">
+          <h1 id="quote-title" class="text-3xl font-extrabold leading-tight text-white sm:text-5xl">Get a Quote</h1>
+
+          <p class="mt-4 max-w-md text-base leading-relaxed text-white/80">
+            Unlock your full delivery potential and get to know us.
+          </p>
+
+          <!-- Quote form fields -->
+          <form class="mt-8 flex flex-col gap-4" novalidate>
+            <div>
+              <input
+                type="email"
+                name="email"
+                autocomplete="email"
+                placeholder="Email"
+                aria-label="Email"
+                class="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/55 focus:border-[#00f49c] focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label for="phone-number" class="text-sm font-semibold text-white">Phone number</label>
+
+              <div class="mt-2 flex gap-3">
+                <div class="relative w-34">
+                  <select
+                    name="phone-area-code"
+                    aria-label="Phone area code"
+                    class="w-full appearance-none rounded-2xl border border-white/20 bg-white/10 px-4 py-3 pr-12 text-white focus:border-[#00f49c] focus:outline-none"
+                  >
+                    <option value="+84">🇺🇸 +84</option>
+                    <option value="+69">🇪🇸 +69</option>
+                    <option value="+52">🇲🇽 +52</option>
+                  </select>
+
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-white/70" aria-hidden="true">
+                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                  </div>
+                </div>
+
+                <input
+                  id="phone-number"
+                  type="tel"
+                  name="phone-number"
+                  inputmode="numeric"
+                  autocomplete="tel-national"
+                  placeholder="5551234567"
+                  aria-describedby="phone-error"
+                  class="min-w-0 flex-1 rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/55 focus:border-[#00f49c] focus:outline-none"
+                />
+              </div>
+
+              <p id="phone-error" class="mt-2 hidden text-sm font-medium text-red-400">Please enter a valid phone number</p>
+            </div>
+
+            <button
+              type="submit"
+              class="mt-2 inline-flex items-center justify-center rounded-full bg-[#00f49c] px-8 py-3 text-sm font-extrabold tracking-wide text-black transition hover:-translate-y-0.5 hover:bg-[#08d98d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]"
+            >
+              Get started
+            </button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <!-- Page behavior scripts -->
+    <script src="./get-a-quote.js"></script>
+  </body>
+</html>
