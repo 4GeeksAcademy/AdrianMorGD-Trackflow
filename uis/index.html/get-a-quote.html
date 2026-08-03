@@ -43,6 +43,12 @@
       :root {
         --shadow-soft: 0 12px 28px rgba(16, 16, 16, 0.18);
       }
+
+      /* Ensure native select dropdown options stay readable across browsers */
+      .area-code-select option {
+        color: #111111;
+        background-color: #ffffff;
+      }
     </style>
 
     <!-- Schema.org structured data for SEO -->
@@ -149,7 +155,7 @@
                   <select
                     name="phone-area-code"
                     aria-label="Phone area code"
-                    class="w-full appearance-none rounded-2xl border border-white/20 bg-white/10 px-4 py-3 pr-12 text-white focus:border-[#00f49c] focus:outline-none"
+                    class="area-code-select w-full appearance-none rounded-2xl border border-white/20 bg-white/10 px-4 py-3 pr-12 text-white focus:border-[#00f49c] focus:outline-none"
                   >
                     <option value="+84">🇺🇸 +84</option>
                     <option value="+69">🇪🇸 +69</option>
