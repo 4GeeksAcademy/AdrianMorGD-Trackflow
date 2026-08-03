@@ -88,62 +88,71 @@
       Skip to main content
     </a>
 
-    <!-- Header with top navigation -->
-    <header class="sticky inset-x-0 top-0 z-30" aria-label="Site header">
-      <nav
-        class="flex w-full items-center justify-between bg-black/30 px-4 py-3 shadow-[var(--shadow-soft)] backdrop-blur-sm"
-        aria-label="Main navigation"
-      >
-        <!-- Left aligned logo placeholder -->
-        <div class="flex items-center gap-2 px-2 py-1" aria-label="Brand logo placeholder">
-          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white text-black" aria-hidden="true">
-            <i class="fa-solid fa-box"></i>
-          </span>
-          <p class="text-base font-extrabold tracking-wide text-white">TRACKFLOW</p>
-        </div>
-
-        <!-- Right aligned burger menu -->
-        <button
-          type="button"
-          aria-label="Open navigation menu"
-          aria-expanded="false"
-          class="inline-flex min-h-10 min-w-10 items-center justify-center rounded-xl border border-white/40 bg-black/35 text-lg text-white transition hover:scale-105 hover:bg-black/45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-mint"
-        >
-          <i class="fa-solid fa-bars" aria-hidden="true"></i>
-        </button>
-      </nav>
-    </header>
-
     <!-- Main page content -->
     <main id="main-content" class="px-4" aria-label="Main content">
       <!-- Hero section with image, black scrim, headline, and primary CTA -->
       <section
         aria-labelledby="hero-title"
-        class="relative -mx-4 -mt-16"
+        class="relative -mx-4"
       >
-        <div class="relative overflow-hidden">
+        <div class="relative min-h-[30rem] overflow-hidden">
             <img
               src="https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&w=1920&q=80"
               alt="Warehouse team handling fulfillment packages"
-              class="h-[30rem] w-full object-cover"
+              class="absolute inset-0 h-full w-full object-cover"
               loading="eager"
             />
             <div class="absolute inset-0 bg-black/45" aria-hidden="true"></div>
 
-            <div class="absolute inset-0 flex flex-col justify-end px-5 pb-8 sm:px-8 sm:pb-10">
-              <h1 id="hero-title" class="max-w-3xl text-3xl font-extrabold leading-tight text-white sm:text-5xl">
-                Smarter Fulfillment for
-                <span class="block">Growing E-commerce Brands</span>
-              </h1>
+            <div class="relative z-10 flex min-h-[30rem] flex-col">
+              <!-- Top nav aligned at the top of hero image container -->
+              <nav
+                class="flex w-full items-center justify-between bg-black/30 px-4 py-3 shadow-[var(--shadow-soft)] backdrop-blur-sm"
+                aria-label="Main navigation"
+              >
+                <!-- Left aligned logo placeholder -->
+                <div class="flex items-center gap-2 px-2 py-1" aria-label="Brand logo placeholder">
+                  <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white text-black" aria-hidden="true">
+                    <i class="fa-solid fa-box"></i>
+                  </span>
+                  <p class="text-base font-extrabold tracking-wide text-white">TRACKFLOW</p>
+                </div>
 
-              <div class="mt-6 flex justify-center">
+                <!-- Right aligned burger menu for mobile -->
+                <button
+                  type="button"
+                  aria-label="Open navigation menu"
+                  aria-expanded="false"
+                  class="inline-flex min-h-10 min-w-10 items-center justify-center rounded-xl border border-white/40 bg-black/35 text-lg text-white transition hover:scale-105 hover:bg-black/45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-mint md:hidden"
+                >
+                  <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                </button>
+
+                <!-- MD breakpoint nav item linked to quote page -->
                 <a
                   href="./get-a-quote.html"
-                  aria-label="Get a Spot Quote"
-                  class="inline-flex items-center justify-center rounded-full bg-[#00f49c] px-8 py-3 text-sm font-extrabold tracking-wide text-black transition hover:-translate-y-0.5 hover:bg-[#08d98d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]"
+                  class="hidden rounded-full bg-[#00f49c] px-5 py-2 text-sm font-extrabold tracking-wide text-black transition hover:bg-[#08d98d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:inline-flex md:items-center md:pl-5 md:pr-6 lg:pl-6 lg:pr-8"
+                  aria-label="Navigate to Get a Quote page"
                 >
-                  Get a Spot Quote
+                  Get a Quote
                 </a>
+              </nav>
+
+              <!-- Hero text and CTA container -->
+              <div class="flex flex-1 items-center justify-center px-5 sm:px-8">
+                <div class="mx-auto flex w-full max-w-none flex-col items-center gap-6 text-center md:mx-0 md:items-start md:text-left">
+                  <h1 id="hero-title" class="w-full max-w-none text-3xl font-extrabold leading-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+                    Smarter Fulfillment for<br />Growing E-commerce Brands
+                  </h1>
+
+                  <a
+                    href="./get-a-quote.html"
+                    aria-label="Get a Spot Quote"
+                    class="inline-flex items-center justify-center rounded-full bg-[#00f49c] px-8 py-3 text-sm font-extrabold tracking-wide text-black transition hover:-translate-y-0.5 hover:bg-[#08d98d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:px-10 md:py-4 md:text-base lg:px-12 lg:py-5 lg:text-lg"
+                  >
+                    Get a Spot Quote
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -152,15 +161,15 @@
       <!-- Impact metrics section with KPI cards -->
       <section id="impact" aria-labelledby="impact-heading" class="-mx-4 bg-black text-white">
         <div class="mx-auto max-w-6xl px-5 py-10 sm:px-8">
-          <h2 id="impact-heading" class="text-balance text-2xl font-extrabold leading-tight sm:text-4xl">
+          <h2 id="impact-heading" class="w-full text-2xl font-extrabold leading-tight sm:text-4xl md:text-5xl lg:text-6xl">
             Reliable Fulfillment for Every Order, Every Time
           </h2>
 
-          <p class="mt-4 max-w-3xl text-base leading-relaxed text-white/85">
+          <p class="mt-4 max-w-3xl text-base leading-relaxed text-white/85 md:text-lg lg:w-full lg:max-w-none lg:text-xl">
             From inventory intake to final-mile delivery, we provide transparent operations, predictable timelines, and scalable fulfillment support for fast-moving e-commerce teams.
           </p>
 
-          <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <div class="mt-8 grid gap-5 md:grid-cols-3">
             <article
               class="rounded-3xl bg-zinc-900 p-4 text-white shadow-[var(--shadow-soft)]"
               aria-label="Impact card 1"
@@ -171,11 +180,11 @@
                 class="h-44 w-full rounded-2xl object-cover"
                 loading="lazy"
               />
-              <h4 class="mt-4 text-3xl font-extrabold">+400</h4>
-              <p class="mt-1 text-sm text-white/85">Warehouses across US</p>
+              <h4 class="mt-4 text-3xl font-extrabold md:text-4xl lg:text-5xl">+400</h4>
+              <p class="mt-1 min-h-[3rem] text-sm text-white/85 md:text-base md:leading-6 lg:text-lg">Warehouses across US</p>
               <a
                 href="#"
-                class="mt-4 inline-flex items-center gap-2 rounded-full border border-[#00f49c] px-4 py-2 text-xs font-semibold text-white transition hover:border-[#00f49c] hover:bg-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]"
+                class="mt-4 inline-flex items-center gap-2 rounded-full border border-[#00f49c] px-4 py-2 text-xs font-semibold text-white transition hover:border-[#00f49c] hover:bg-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:px-5 md:py-2.5 md:text-sm lg:px-6 lg:py-3 lg:text-base"
                 aria-label="Learn more about warehouse network"
               >
                 Learn more <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
@@ -192,11 +201,11 @@
                 class="h-44 w-full rounded-2xl object-cover"
                 loading="lazy"
               />
-              <h4 class="mt-4 text-3xl font-extrabold">+50k</h4>
-              <p class="mt-1 text-sm text-white/85">Shipments Delivered Successfully</p>
+              <h4 class="mt-4 text-3xl font-extrabold md:text-4xl lg:text-5xl">+50k</h4>
+              <p class="mt-1 min-h-[3rem] text-sm text-white/85 md:text-base md:leading-6 lg:text-lg">Shipments Delivered Successfully</p>
               <a
                 href="#"
-                class="mt-4 inline-flex items-center gap-2 rounded-full border border-[#00f49c] px-4 py-2 text-xs font-semibold text-white transition hover:border-[#00f49c] hover:bg-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]"
+                class="mt-4 inline-flex items-center gap-2 rounded-full border border-[#00f49c] px-4 py-2 text-xs font-semibold text-white transition hover:border-[#00f49c] hover:bg-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:px-5 md:py-2.5 md:text-sm lg:px-6 lg:py-3 lg:text-base"
                 aria-label="Learn more about shipment success"
               >
                 Learn more <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
@@ -213,11 +222,11 @@
                 class="h-44 w-full rounded-2xl object-cover"
                 loading="lazy"
               />
-              <h4 class="mt-4 text-3xl font-extrabold">98.7%</h4>
-              <p class="mt-1 text-sm text-white/85">On Time Delivery Rate</p>
+              <h4 class="mt-4 text-3xl font-extrabold md:text-4xl lg:text-5xl">98.7%</h4>
+              <p class="mt-1 min-h-[3rem] text-sm text-white/85 md:text-base md:leading-6 lg:text-lg">On Time Delivery Rate</p>
               <a
                 href="#"
-                class="mt-4 inline-flex items-center gap-2 rounded-full border border-[#00f49c] px-4 py-2 text-xs font-semibold text-white transition hover:border-[#00f49c] hover:bg-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]"
+                class="mt-4 inline-flex items-center gap-2 rounded-full border border-[#00f49c] px-4 py-2 text-xs font-semibold text-white transition hover:border-[#00f49c] hover:bg-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:px-5 md:py-2.5 md:text-sm lg:px-6 lg:py-3 lg:text-base"
                 aria-label="Learn more about delivery rate"
               >
                 Learn more <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
@@ -230,9 +239,9 @@
       <!-- Why choose us section with supporting content and CTA -->
       <section id="why-choose-us" aria-labelledby="why-heading" class="pb-16">
         <div class="mx-auto max-w-6xl rounded-b-3xl rounded-t-none border border-[#cbd3d9] bg-white p-6 shadow-[var(--shadow-soft)] sm:p-8">
-          <h2 id="why-heading" class="text-center text-2xl font-extrabold sm:text-4xl">Flexible capacity on demand</h2>
+          <h2 id="why-heading" class="text-center text-2xl font-extrabold sm:text-4xl md:text-5xl lg:text-6xl">Flexible capacity on demand</h2>
 
-          <p class="mx-auto mt-4 max-w-4xl text-balance text-center text-base leading-relaxed text-black/80">
+          <p class="mx-auto mt-4 w-full max-w-none text-center text-base leading-relaxed text-black/80 md:text-lg lg:text-xl">
             We have one of the world’s largest networks of independent shippers source the right truck for each load and drivers find loads that fit their schedules. Finding the optimal transportation solution is a seamless experience.
           </p>
 
@@ -240,7 +249,7 @@
             <a
               href="./get-a-quote.html"
               aria-label="Get a Spot Quote"
-              class="inline-flex items-center justify-center rounded-full bg-[#00f49c] px-8 py-3 text-sm font-extrabold tracking-wide text-black transition hover:-translate-y-0.5 hover:bg-[#08d98d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]"
+              class="inline-flex items-center justify-center rounded-full bg-[#00f49c] px-8 py-3 text-sm font-extrabold tracking-wide text-black transition hover:-translate-y-0.5 hover:bg-[#08d98d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:px-10 md:py-4 md:text-base lg:px-12 lg:py-5 lg:text-lg"
             >
               Get a Spot Quote
             </a>
@@ -264,7 +273,7 @@
           <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white text-black" aria-hidden="true">
             <i class="fa-solid fa-box"></i>
           </span>
-          <p class="text-sm font-extrabold tracking-wide text-white sm:text-base">TRACKFLOW</p>
+          <p class="text-sm font-extrabold tracking-wide text-white sm:text-base md:text-lg lg:text-xl">TRACKFLOW</p>
         </div>
 
         <!-- Social media icons row -->
@@ -272,21 +281,21 @@
           <a
             href="#"
             aria-label="Visit Trackflow on Facebook"
-            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/35 text-white transition hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]"
+            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/35 text-white transition hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:h-11 md:w-11 md:text-lg"
           >
             <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
           </a>
           <a
             href="#"
             aria-label="Visit Trackflow on Twitter"
-            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/35 text-white transition hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]"
+            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/35 text-white transition hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:h-11 md:w-11 md:text-lg"
           >
             <i class="fa-brands fa-twitter" aria-hidden="true"></i>
           </a>
           <a
             href="#"
             aria-label="Visit Trackflow on Instagram"
-            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/35 text-white transition hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]"
+            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/35 text-white transition hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:h-11 md:w-11 md:text-lg"
           >
             <i class="fa-brands fa-instagram" aria-hidden="true"></i>
           </a>
