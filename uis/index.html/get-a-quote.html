@@ -135,16 +135,19 @@
           </p>
 
           <!-- Quote form fields -->
-          <form class="mt-8 flex flex-col gap-4" novalidate>
+          <form id="quote-form" class="mt-8 flex flex-col gap-4" novalidate>
             <div>
               <input
+                id="email"
                 type="email"
                 name="email"
                 autocomplete="email"
                 placeholder="Email"
                 aria-label="Email"
+                aria-describedby="email-error"
                 class="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/55 focus:border-[#00f49c] focus:outline-none"
               />
+              <p id="email-error" class="mt-2 hidden text-sm font-medium text-red-400">Please enter a valid email</p>
             </div>
 
             <div>
@@ -191,9 +194,20 @@
           </form>
         </div>
       </section>
+
+      <!-- Toast feedback shown after form submit -->
+      <div
+        id="submit-toast"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        class="pointer-events-none fixed bottom-6 left-1/2 z-30 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 translate-y-4 rounded-2xl border border-[#00f49c]/70 bg-black/85 px-4 py-3 text-center text-sm font-semibold text-white opacity-0 shadow-[var(--shadow-soft)] transition-all duration-300"
+      >
+        Thank you for submitting we will be in touch
+      </div>
     </main>
 
     <!-- Page behavior scripts -->
-    <script src="./get-a-quote.js"></script>
+    <script src="./validation.js"></script>
   </body>
 </html>
