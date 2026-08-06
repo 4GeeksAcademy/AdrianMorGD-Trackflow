@@ -1,23 +1,21 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Basic SEO and responsive metadata -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Get a Quote | Trackflow Fulfillment</title>
+    <title>Request info | Trackflow Fulfillment</title>
     <meta
       name="description"
-      content="Unlock your full delivery potential with Trackflow. Request a quote for dependable fulfillment and tracking support."
+      content="Request information from Trackflow and discover flexible fulfillment support for growing e-commerce brands."
     />
 
-    <meta property="og:title" content="Get a Quote | Trackflow Fulfillment" />
+    <meta property="og:title" content="Request info | Trackflow Fulfillment" />
     <meta
       property="og:description"
-      content="Request a quote from Trackflow and discover flexible fulfillment support for growing e-commerce brands."
+      content="Request information from Trackflow and discover flexible fulfillment support for growing e-commerce brands."
     />
     <meta property="og:type" content="website" />
 
-    <!-- Google Fonts: geometric sans serif family -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -25,7 +23,6 @@
       rel="stylesheet"
     />
 
-    <!-- Font Awesome icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
@@ -34,89 +31,108 @@
       referrerpolicy="no-referrer"
     />
 
-    <!-- Tailwind CSS v4 browser build -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="./page-behavior.js"></script>
 
-    <!-- Theme tokens for palette, typography, and shadows -->
     <style>
       :root {
         --shadow-soft: 0 12px 28px rgba(16, 16, 16, 0.18);
       }
-
-      /* Ensure native select dropdown options stay readable across browsers */
-      .area-code-select option {
-        color: #111111;
-        background-color: #ffffff;
-      }
     </style>
-
-    <!-- Schema.org structured data for SEO -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "Trackflow",
-        "url": "https://example.com",
-        "description": "Trackflow provides fulfillment services for growing e-commerce brands.",
-        "logo": "https://example.com/logo.png",
-        "sameAs": []
-      }
-    </script>
   </head>
   <body class="min-h-screen overflow-x-hidden bg-black text-white antialiased [font-family:Manrope,sans-serif]">
-    <!-- Decorative radial dot pattern background -->
-    <svg
-      class="pointer-events-none fixed inset-0 -z-10 h-full w-full opacity-20"
-      aria-hidden="true"
-      viewBox="0 0 1440 1200"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <defs>
-        <pattern id="dotPattern" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
-          <circle cx="2" cy="2" r="1.5" fill="#d7dee3" />
-        </pattern>
-        <radialGradient id="dotFade" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(720 400) rotate(90) scale(700 900)">
-          <stop stop-color="black" stop-opacity="0" />
-          <stop offset="1" stop-color="black" stop-opacity="1" />
-        </radialGradient>
-      </defs>
-      <rect width="1440" height="1200" fill="url(#dotPattern)" />
-      <rect width="1440" height="1200" fill="url(#dotFade)" />
-    </svg>
-
-    <!-- Skip link for keyboard and assistive technology users -->
-    <a
-      href="#main-content"
-      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-black"
-    >
-      Skip to main content
-    </a>
-
-    <!-- Header with brand link back to homepage -->
-    <header class="sticky inset-x-0 top-0 z-20" aria-label="Site header">
-      <nav class="flex w-full items-center justify-between bg-black/30 px-4 py-4 backdrop-blur-sm" aria-label="Secondary navigation">
-        <a href="./index.html" class="flex items-center gap-2 px-2 py-1" aria-label="Go back to homepage">
+    <header class="sticky inset-x-0 top-0 z-30" aria-label="Site header">
+      <nav class="flex w-full items-center justify-between bg-black/40 px-4 py-3 shadow-[var(--shadow-soft)] backdrop-blur-sm" aria-label="Main navigation">
+        <a href="./index.html" class="flex items-center gap-2 px-2 py-1" aria-label="Go to homepage">
           <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white text-black" aria-hidden="true">
             <i class="fa-solid fa-box"></i>
           </span>
           <span class="text-base font-extrabold tracking-wide text-white">TRACKFLOW</span>
         </a>
 
-        <a
-          href="./index.html"
-          class="inline-flex items-center gap-2 rounded-full border border-white/35 bg-black/30 px-4 py-2 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]"
-        >
-          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-          Back home
-        </a>
+        <div class="hidden w-full flex-1 items-center justify-end gap-6 md:flex lg:gap-8">
+          <ul class="flex items-center gap-6 text-sm font-bold tracking-wide text-white lg:gap-8" aria-label="Primary links">
+            <li>
+              <a href="./index.html" class="transition hover:text-[#00f49c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]">Home</a>
+            </li>
+            <li>
+              <a href="./index.html#why-choose-us" class="transition hover:text-[#00f49c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]">Services</a>
+            </li>
+            <li>
+              <a href="./index.html#impact" class="transition hover:text-[#00f49c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]">Coverage</a>
+            </li>
+            <li>
+              <a href="./get-a-quote.html" class="transition hover:text-[#00f49c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]">Contact</a>
+            </li>
+          </ul>
+
+          <div class="flex items-center" aria-label="Quote button container">
+            <a
+              href="./get-a-quote.html"
+              class="rounded-full bg-[#00f49c] px-5 py-2 text-sm font-extrabold tracking-wide text-black transition hover:bg-[#08d98d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:inline-flex md:items-center md:pl-5 md:pr-6 lg:pl-6 lg:pr-8"
+              aria-label="Navigate to Request info page"
+            >
+              Request info
+            </a>
+          </div>
+        </div>
+
+        <div class="ml-auto flex items-center gap-2 md:hidden">
+          <a
+            href="./get-a-quote.html"
+            class="inline-flex items-center rounded-full bg-[#00f49c] px-4 py-2 text-xs font-extrabold tracking-wide text-black transition hover:bg-[#08d98d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]"
+            aria-label="Navigate to Request info page"
+          >
+            Request info
+          </a>
+
+          <button
+            type="button"
+            aria-label="Open navigation menu"
+            aria-expanded="false"
+            aria-controls="mobile-nav-menu"
+            data-menu-toggle
+            class="inline-flex min-h-10 min-w-10 items-center justify-center rounded-xl border border-white/40 bg-black/35 text-lg text-white transition hover:scale-105 hover:bg-black/45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]"
+          >
+            <i class="fa-solid fa-bars" aria-hidden="true"></i>
+          </button>
+        </div>
       </nav>
+
+      <div class="pointer-events-none fixed inset-0 z-30 bg-black/40 opacity-0 transition-opacity duration-300 md:hidden" data-menu-overlay aria-hidden="true"></div>
+
+      <div
+        id="mobile-nav-menu"
+        class="fixed inset-y-0 right-0 z-40 w-72 translate-x-full bg-black/95 px-5 pb-6 pt-20 transition-transform duration-300 md:hidden"
+        data-menu-panel
+      >
+        <ul class="flex flex-col gap-3 text-sm font-bold tracking-wide text-white" aria-label="Mobile primary links">
+          <li>
+            <a href="./index.html" class="block rounded-lg px-2 py-2 transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]">Home</a>
+          </li>
+          <li>
+            <a href="./index.html#why-choose-us" class="block rounded-lg px-2 py-2 transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]">Services</a>
+          </li>
+          <li>
+            <a href="./index.html#impact" class="block rounded-lg px-2 py-2 transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]">Coverage</a>
+          </li>
+          <li>
+            <a href="./get-a-quote.html" class="block rounded-lg px-2 py-2 transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]">Contact</a>
+          </li>
+        </ul>
+
+        <button
+          type="button"
+          class="mt-6 inline-flex min-h-10 items-center justify-center rounded-lg border border-white/40 px-4 text-sm font-semibold text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]"
+          data-menu-close
+          aria-label="Close navigation menu"
+        >
+          Close menu
+        </button>
+      </div>
     </header>
 
-    <!-- Main page content -->
     <main id="main-content" class="relative min-h-screen" aria-label="Get a quote page content">
-      <!-- Full width tracking background image -->
       <img
         src="https://images.unsplash.com/photo-1605745341112-85968b19335b?auto=format&fit=crop&w=1920&q=80"
         alt="Tracking and logistics operations background"
@@ -125,89 +141,249 @@
       />
       <div class="absolute inset-0 bg-black/45" aria-hidden="true"></div>
 
-      <!-- Centered quote form container -->
       <section class="relative z-10 flex min-h-screen items-center justify-center px-5 py-24" aria-labelledby="quote-title">
         <div class="w-full max-w-xl rounded-3xl border border-white/80 bg-black/45 p-6 shadow-[var(--shadow-soft)] backdrop-blur-md sm:p-8">
-          <h1 id="quote-title" class="text-3xl font-extrabold leading-tight text-white sm:text-5xl">Get a Quote</h1>
+          <h1 id="quote-title" class="text-3xl font-extrabold leading-tight text-white sm:text-5xl">Information Request</h1>
+          <p id="step-description" class="mt-3 text-sm font-medium text-white/80 sm:text-base">Please enter contact ionformation</p>
 
-          <p class="mt-4 max-w-md text-base leading-relaxed text-white/80">
-            Unlock your full delivery potential and get to know us.
-          </p>
+          <div class="mt-5 flex items-center gap-2" aria-label="Form steps">
+            <div data-step-indicator="1" class="flex h-8 w-8 items-center justify-center rounded-full bg-[#00f49c] text-xs font-bold text-black">1</div>
+            <div class="h-px flex-1 bg-white/25"></div>
+            <div data-step-indicator="2" class="flex h-8 w-8 items-center justify-center rounded-full border border-white/30 text-xs font-bold text-white">2</div>
+            <div class="h-px flex-1 bg-white/25"></div>
+            <div data-step-indicator="3" class="flex h-8 w-8 items-center justify-center rounded-full border border-white/30 text-xs font-bold text-white">3</div>
+          </div>
 
-          <!-- Quote form fields -->
           <form id="quote-form" class="mt-8 flex flex-col gap-4" novalidate>
-            <div>
-              <input
-                id="email"
-                type="email"
-                name="email"
-                autocomplete="email"
-                placeholder="Email"
-                aria-label="Email"
-                aria-describedby="email-error"
-                class="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/55 focus:border-[#00f49c] focus:outline-none"
-              />
-              <p id="email-error" class="mt-2 hidden text-sm font-medium text-red-400">Please enter a valid email</p>
-            </div>
-
-            <div>
-              <label for="phone-number" class="text-sm font-semibold text-white">Phone number</label>
-
-              <div class="mt-2 flex gap-3">
-                <div class="relative w-34">
-                  <select
-                    name="phone-area-code"
-                    aria-label="Phone area code"
-                    class="area-code-select w-full appearance-none rounded-2xl border border-white/20 bg-white/10 px-4 py-3 pr-12 text-white focus:border-[#00f49c] focus:outline-none"
-                  >
-                    <option value="+84">🇺🇸 +84</option>
-                    <option value="+69">🇪🇸 +69</option>
-                    <option value="+52">🇲🇽 +52</option>
-                  </select>
-
-                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-white/70" aria-hidden="true">
-                    <i class="fa-solid fa-chevron-down text-xs"></i>
-                  </div>
-                </div>
-
+            <div data-form-step="1" class="space-y-4">
+              <div>
+                <label for="company-name" class="text-sm font-semibold text-white">Company name *</label>
                 <input
-                  id="phone-number"
-                  type="tel"
-                  name="phone-number"
-                  inputmode="numeric"
-                  autocomplete="tel-national"
-                  placeholder="5551234567"
-                  aria-describedby="phone-error"
-                  class="min-w-0 flex-1 rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/55 focus:border-[#00f49c] focus:outline-none"
+                  id="company-name"
+                  type="text"
+                  name="company-name"
+                  autocomplete="organization"
+                  placeholder="TrackFlow Inc"
+                  aria-describedby="company-name-error"
+                  class="mt-2 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/55 focus:border-[#00f49c] focus:outline-none"
                 />
+                <p id="company-name-error" class="mt-2 hidden text-sm font-medium text-red-400">Company name must have at least 2 characters</p>
               </div>
 
-              <p id="phone-error" class="mt-2 hidden text-sm font-medium text-red-400">Please enter a valid phone number</p>
+              <div>
+                <label for="contact-person" class="text-sm font-semibold text-white">Contact person *</label>
+                <input
+                  id="contact-person"
+                  type="text"
+                  name="contact-person"
+                  autocomplete="name"
+                  placeholder="Jane Doe"
+                  aria-describedby="contact-person-error"
+                  class="mt-2 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/55 focus:border-[#00f49c] focus:outline-none"
+                />
+                <p id="contact-person-error" class="mt-2 hidden text-sm font-medium text-red-400">Enter first and last name of contact</p>
+              </div>
+
+              <div>
+                <label for="email" class="text-sm font-semibold text-white">Corporate email *</label>
+                <input
+                  id="email"
+                  type="email"
+                  name="email"
+                  autocomplete="email"
+                  placeholder="name@company.com"
+                  aria-describedby="email-error"
+                  class="mt-2 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/55 focus:border-[#00f49c] focus:outline-none"
+                />
+                <p id="email-error" class="mt-2 hidden text-sm font-medium text-red-400">Enter a valid corporate email (example: name@company.com)</p>
+              </div>
+
+              <div>
+                <label for="phone" class="text-sm font-semibold text-white">Phone *</label>
+                <input
+                  id="phone"
+                  type="tel"
+                  name="phone"
+                  autocomplete="tel"
+                  placeholder="+1 213 555 0147"
+                  aria-describedby="phone-error"
+                  class="mt-2 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/55 focus:border-[#00f49c] focus:outline-none"
+                />
+                <p id="phone-error" class="mt-2 hidden text-sm font-medium text-red-400">Phone must include country code (example: +1 213 555 0147)</p>
+              </div>
+
+              <div>
+                <label for="website" class="text-sm font-semibold text-white">Company website</label>
+                <input
+                  id="website"
+                  type="url"
+                  name="website"
+                  autocomplete="url"
+                  placeholder="https://company.com"
+                  aria-describedby="website-error"
+                  class="mt-2 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/55 focus:border-[#00f49c] focus:outline-none"
+                />
+                <p id="website-error" class="mt-2 hidden text-sm font-medium text-red-400">If you include website, it must be a valid URL</p>
+              </div>
             </div>
 
-            <button
-              type="submit"
-              class="mt-2 inline-flex items-center justify-center rounded-full bg-[#00f49c] px-8 py-3 text-sm font-extrabold tracking-wide text-black transition hover:-translate-y-0.5 hover:bg-[#08d98d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]"
-            >
-              Get started
-            </button>
+            <div data-form-step="2" class="hidden space-y-4">
+              <div>
+                <label for="country" class="text-sm font-semibold text-white">Main operating country *</label>
+                <select
+                  id="country"
+                  name="country"
+                  aria-describedby="country-error"
+                  class="mt-2 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white focus:border-[#00f49c] focus:outline-none"
+                >
+                  <option value="" class="text-black">Select an option</option>
+                  <option value="United States" class="text-black">United States</option>
+                  <option value="Spain" class="text-black">Spain</option>
+                  <option value="Both" class="text-black">Both</option>
+                  <option value="Other" class="text-black">Other</option>
+                </select>
+                <p id="country-error" class="mt-2 hidden text-sm font-medium text-red-400">Select main operating country</p>
+              </div>
+
+              <div>
+                <label for="product-type" class="text-sm font-semibold text-white">Product type *</label>
+                <select
+                  id="product-type"
+                  name="product-type"
+                  aria-describedby="product-type-error"
+                  class="mt-2 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white focus:border-[#00f49c] focus:outline-none"
+                >
+                  <option value="" class="text-black">Select an option</option>
+                  <option value="Fashion" class="text-black">Fashion</option>
+                  <option value="Electronics" class="text-black">Electronics</option>
+                  <option value="Cosmetics" class="text-black">Cosmetics</option>
+                  <option value="Food" class="text-black">Food</option>
+                  <option value="Other" class="text-black">Other</option>
+                </select>
+                <p id="product-type-error" class="mt-2 hidden text-sm font-medium text-red-400">Select the type of product you handle</p>
+              </div>
+
+              <div>
+                <label for="monthly-volume" class="text-sm font-semibold text-white">Estimated monthly shipping volume *</label>
+                <select
+                  id="monthly-volume"
+                  name="monthly-volume"
+                  aria-describedby="monthly-volume-error"
+                  class="mt-2 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white focus:border-[#00f49c] focus:outline-none"
+                >
+                  <option value="" class="text-black">Select an option</option>
+                  <option value="0-100 shipments/month" class="text-black">0-100</option>
+                  <option value="101-500 shipments/month" class="text-black">101-500</option>
+                  <option value="501-2000 shipments/month" class="text-black">501-2000</option>
+                  <option value="2000+ shipments/month" class="text-black">2000+</option>
+                  <option value="Not sure" class="text-black">Not sure</option>
+                </select>
+                <p id="monthly-volume-error" class="mt-2 hidden text-sm font-medium text-red-400">Select estimated monthly volume</p>
+              </div>
+            </div>
+
+            <div data-form-step="3" class="hidden space-y-4">
+              <fieldset class="rounded-2xl border border-white/20 p-4">
+                <legend class="px-1 text-sm font-semibold text-white">Services of interest *</legend>
+                <div class="mt-3 grid gap-2 sm:grid-cols-3">
+                  <label class="inline-flex items-center gap-2 text-sm text-white/90">
+                    <input type="checkbox" name="services" value="Warehousing" class="h-4 w-4 rounded border-white/30 bg-white/10 text-[#00f49c] focus:ring-[#00f49c]" />
+                    <span>Warehousing</span>
+                  </label>
+                  <label class="inline-flex items-center gap-2 text-sm text-white/90">
+                    <input type="checkbox" name="services" value="Last mile" class="h-4 w-4 rounded border-white/30 bg-white/10 text-[#00f49c] focus:ring-[#00f49c]" />
+                    <span>Last mile</span>
+                  </label>
+                  <label class="inline-flex items-center gap-2 text-sm text-white/90">
+                    <input type="checkbox" name="services" value="Reverse logistics" class="h-4 w-4 rounded border-white/30 bg-white/10 text-[#00f49c] focus:ring-[#00f49c]" />
+                    <span>Reverse logistics</span>
+                  </label>
+                </div>
+                <p id="services-error" class="mt-2 hidden text-sm font-medium text-red-400">Select at least one service of interest</p>
+              </fieldset>
+
+              <fieldset class="rounded-2xl border border-white/20 p-4">
+                <legend class="px-1 text-sm font-semibold text-white">Do you currently work with another 3PL? *</legend>
+                <div class="mt-3 grid gap-2 sm:grid-cols-3">
+                  <label class="inline-flex items-center gap-2 text-sm text-white/90">
+                    <input type="radio" name="current-3pl" value="Yes" class="h-4 w-4 border-white/30 bg-white/10 text-[#00f49c] focus:ring-[#00f49c]" />
+                    <span>Yes</span>
+                  </label>
+                  <label class="inline-flex items-center gap-2 text-sm text-white/90">
+                    <input type="radio" name="current-3pl" value="No" class="h-4 w-4 border-white/30 bg-white/10 text-[#00f49c] focus:ring-[#00f49c]" />
+                    <span>No</span>
+                  </label>
+                  <label class="inline-flex items-center gap-2 text-sm text-white/90">
+                    <input type="radio" name="current-3pl" value="Evaluating options" class="h-4 w-4 border-white/30 bg-white/10 text-[#00f49c] focus:ring-[#00f49c]" />
+                    <span>Evaluating options</span>
+                  </label>
+                </div>
+                <p id="current-3pl-error" class="mt-2 hidden text-sm font-medium text-red-400">Indicate if you currently work with another logistics provider</p>
+              </fieldset>
+
+              <div>
+                <label for="comments" class="text-sm font-semibold text-white">Comments or specific needs</label>
+                <textarea
+                  id="comments"
+                  name="comments"
+                  rows="4"
+                  placeholder="Tell us your logistics needs"
+                  aria-describedby="comments-error comments-counter"
+                  class="mt-2 w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/55 focus:border-[#00f49c] focus:outline-none"
+                ></textarea>
+                <div class="mt-2 flex items-center justify-between">
+                  <p id="comments-error" class="hidden text-sm font-medium text-red-400">Comments cannot exceed 500 characters (500 remaining)</p>
+                  <p id="comments-counter" class="ml-auto text-xs text-white/70">500 remaining</p>
+                </div>
+              </div>
+
+              <div>
+                <label class="inline-flex items-center gap-2 text-sm text-white/90">
+                  <input id="privacy-policy" type="checkbox" name="privacy-policy" class="h-4 w-4 rounded border-white/30 bg-white/10 text-[#00f49c] focus:ring-[#00f49c]" />
+                  <span>I accept the privacy policy *</span>
+                </label>
+                <p id="privacy-policy-error" class="mt-2 hidden text-sm font-medium text-red-400">You must accept the privacy policy to continue</p>
+              </div>
+
+              <p id="low-volume-warning" class="hidden rounded-xl border border-amber-300/40 bg-amber-300/15 px-4 py-3 text-sm font-medium text-amber-100">
+                For volumes under 100 monthly shipments, our services might not be the most efficient solution. Are you sure you want to continue?
+              </p>
+            </div>
+
+            <div class="mt-2 flex items-center justify-between gap-3">
+              <button
+                id="step-back"
+                type="button"
+                disabled
+                class="inline-flex items-center justify-center rounded-full border border-white/35 px-6 py-3 text-sm font-bold tracking-wide text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Back
+              </button>
+
+              <button
+                id="step-next"
+                type="button"
+                class="inline-flex items-center justify-center rounded-full bg-[#00f49c] px-8 py-3 text-sm font-extrabold tracking-wide text-black transition hover:-translate-y-0.5 hover:bg-[#08d98d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]"
+              >
+                Next
+              </button>
+            </div>
           </form>
+
+          <section id="success-message" aria-live="polite" class="mt-8 hidden rounded-2xl border border-[#00f49c]/60 bg-black/60 p-5 text-white">
+            <h2 class="text-base font-extrabold">Thank you for your interest in TrackFlow!</h2>
+            <p class="mt-3 text-sm leading-relaxed text-white/90">
+              We have received your request. Our commercial team will review your information and contact you within the next 24-48 hours to schedule a call and learn about your logistics needs in detail.
+            </p>
+            <p class="mt-3 text-sm leading-relaxed text-white/90">
+              If you have any urgent inquiry, write to us directly at
+              <a href="mailto:comercial@trackflow.com" class="font-semibold text-[#00f49c] underline underline-offset-2">comercial@trackflow.com</a>
+            </p>
+          </section>
         </div>
       </section>
-
-      <!-- Toast feedback shown after form submit -->
-      <div
-        id="submit-toast"
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-        class="pointer-events-none fixed bottom-6 left-1/2 z-30 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 translate-y-4 rounded-2xl border border-[#00f49c]/70 bg-black/85 px-4 py-3 text-center text-sm font-semibold text-white opacity-0 shadow-[var(--shadow-soft)] transition-all duration-300"
-      >
-        Thank you for submitting we will be in touch
-      </div>
     </main>
 
-    <!-- Page behavior scripts -->
     <script src="./validation.js"></script>
   </body>
 </html>
