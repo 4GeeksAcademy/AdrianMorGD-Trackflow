@@ -118,39 +118,110 @@
                   <p class="text-base font-extrabold tracking-wide text-white">TRACKFLOW</p>
                 </div>
 
-                <!-- Right aligned burger menu for mobile -->
+                <!-- Desktop nav layout: links with intrinsic width + right aligned quote CTA -->
+                <div class="hidden w-full flex-1 items-center justify-end gap-6 md:flex lg:gap-8">
+                  <ul class="flex items-center gap-6 text-sm font-bold tracking-wide text-white lg:gap-8" aria-label="Primary links">
+                    <li>
+                      <a href="#main-content" class="transition hover:text-[#00f49c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]">Home</a>
+                    </li>
+                    <li>
+                      <a href="#why-choose-us" class="transition hover:text-[#00f49c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]">Services</a>
+                    </li>
+                    <li>
+                      <a href="#impact" class="transition hover:text-[#00f49c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]">Coverage</a>
+                    </li>
+                    <li>
+                      <a href="./get-a-quote.html" class="transition hover:text-[#00f49c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]">Contact</a>
+                    </li>
+                  </ul>
+
+                  <div class="flex items-center" aria-label="Quote button container">
+                    <a
+                      href="./get-a-quote.html"
+                      class="rounded-full bg-[#00f49c] px-5 py-2 text-sm font-extrabold tracking-wide text-black transition hover:bg-[#08d98d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:inline-flex md:items-center md:pl-5 md:pr-6 lg:pl-6 lg:pr-8"
+                      aria-label="Navigate to Request info page"
+                    >
+                      Request info
+                    </a>
+                  </div>
+                </div>
+
+                <!-- Mobile actions: right aligned quote CTA + drawer toggle -->
+                <div class="ml-auto flex items-center gap-2 md:hidden">
+                  <a
+                    href="./get-a-quote.html"
+                    class="inline-flex items-center rounded-full bg-[#00f49c] px-4 py-2 text-xs font-extrabold tracking-wide text-black transition hover:bg-[#08d98d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]"
+                    aria-label="Navigate to Request info page"
+                  >
+                    Request info
+                  </a>
+
+                  <button
+                    type="button"
+                    aria-label="Open navigation menu"
+                    aria-expanded="false"
+                    aria-controls="mobile-nav-menu"
+                    data-menu-toggle
+                    class="inline-flex min-h-10 min-w-10 items-center justify-center rounded-xl border border-white/40 bg-black/35 text-lg text-white transition hover:scale-105 hover:bg-black/45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-mint"
+                  >
+                    <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                  </button>
+                </div>
+
+
+              </nav>
+
+              <!-- Mobile drawer overlay -->
+              <div class="pointer-events-none fixed inset-0 z-30 bg-black/40 opacity-0 transition-opacity duration-300 md:hidden" data-menu-overlay aria-hidden="true"></div>
+
+              <!-- Mobile navigation drawer (opens from right to left) -->
+              <div
+                id="mobile-nav-menu"
+                class="fixed inset-y-0 right-0 z-40 w-72 translate-x-full bg-black/95 px-5 pb-6 pt-20 transition-transform duration-300 md:hidden"
+                data-menu-panel
+              >
+                <ul class="flex flex-col gap-3 text-sm font-bold tracking-wide text-white" aria-label="Mobile primary links">
+                  <li>
+                    <a href="#main-content" class="block rounded-lg px-2 py-2 transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]">Home</a>
+                  </li>
+                  <li>
+                    <a href="#why-choose-us" class="block rounded-lg px-2 py-2 transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]">Services</a>
+                  </li>
+                  <li>
+                    <a href="#impact" class="block rounded-lg px-2 py-2 transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]">Coverage</a>
+                  </li>
+                  <li>
+                    <a href="./get-a-quote.html" class="block rounded-lg px-2 py-2 transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]">Contact</a>
+                  </li>
+                </ul>
+
                 <button
                   type="button"
-                  aria-label="Open navigation menu"
-                  aria-expanded="false"
-                  class="inline-flex min-h-10 min-w-10 items-center justify-center rounded-xl border border-white/40 bg-black/35 text-lg text-white transition hover:scale-105 hover:bg-black/45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-mint md:hidden"
+                  class="mt-6 inline-flex min-h-10 items-center justify-center rounded-lg border border-white/40 px-4 text-sm font-semibold text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c]"
+                  data-menu-close
+                  aria-label="Close navigation menu"
                 >
-                  <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                  Close menu
                 </button>
-
-                <!-- MD breakpoint nav item linked to quote page -->
-                <a
-                  href="./get-a-quote.html"
-                  class="hidden rounded-full bg-[#00f49c] px-5 py-2 text-sm font-extrabold tracking-wide text-black transition hover:bg-[#08d98d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:inline-flex md:items-center md:pl-5 md:pr-6 lg:pl-6 lg:pr-8"
-                  aria-label="Navigate to Get a Quote page"
-                >
-                  Get a Quote
-                </a>
-              </nav>
+              </div>
 
               <!-- Hero text and CTA container -->
               <div class="flex flex-1 items-center justify-center px-5 sm:px-8">
                 <div class="mx-auto flex w-full max-w-none flex-col items-center gap-6 text-center md:mx-0 md:items-start md:text-left">
                   <h1 id="hero-title" class="w-full max-w-none text-3xl font-extrabold leading-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
-                    Smarter Fulfillment for<br />Growing E-commerce Brands
+                   Logistics that scales <br />with your e-commerce
                   </h1>
+
+                  <p class="w-full max-w-3xl text-sm leading-relaxed text-white/90 sm:text-base md:text-lg lg:text-xl">
+                    Warehouse management, last-mile deliveries, and reverse logistics in the United States and Spain. Over 15 years helping fashion, electronics, and cosmetics brands grow without worrying about operations
+                  </p>
 
                   <a
                     href="./get-a-quote.html"
-                    aria-label="Get a Spot Quote"
+                    aria-label="Request info"
                     class="inline-flex items-center justify-center rounded-full bg-[#00f49c] px-8 py-3 text-sm font-extrabold tracking-wide text-black transition hover:-translate-y-0.5 hover:bg-[#08d98d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:px-10 md:py-4 md:text-base lg:px-12 lg:py-5 lg:text-lg"
                   >
-                    Get a Spot Quote
+                    Request info
                   </a>
                 </div>
               </div>
@@ -180,8 +251,12 @@
                 class="h-44 w-full rounded-2xl object-cover"
                 loading="lazy"
               />
-              <h4 class="mt-4 text-3xl font-extrabold md:text-4xl lg:text-5xl">+400</h4>
-              <p class="mt-1 min-h-[3rem] text-sm text-white/85 md:text-base md:leading-6 lg:text-lg">Warehouses across US</p>
+              <h3 class="mt-4 text-lg font-semibold tracking-wide text-white md:text-xl lg:text-2xl">Warehouse Management</h3>
+              <ul class="mt-2 min-h-[6rem] list-disc space-y-1 pl-5 text-sm text-white/85 md:text-sm md:leading-6 lg:text-base">
+                <li>Storage, picking and packing</li>
+                <li>Real-time inventory</li>
+                <li>We operate warehouses in Los Angeles and Zaragoza</li>
+              </ul>
               <a
                 href="#"
                 class="mt-4 inline-flex items-center gap-2 rounded-full border border-[#00f49c] px-4 py-2 text-xs font-semibold text-white transition hover:border-[#00f49c] hover:bg-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:px-5 md:py-2.5 md:text-sm lg:px-6 lg:py-3 lg:text-base"
@@ -201,8 +276,12 @@
                 class="h-44 w-full rounded-2xl object-cover"
                 loading="lazy"
               />
-              <h4 class="mt-4 text-3xl font-extrabold md:text-4xl lg:text-5xl">+50k</h4>
-              <p class="mt-1 min-h-[3rem] text-sm text-white/85 md:text-base md:leading-6 lg:text-lg">Shipments Delivered Successfully</p>
+              <h3 class="mt-4 text-lg font-semibold tracking-wide text-white md:text-xl lg:text-2xl">Last-Mile Deliveries</h3>
+              <ul class="mt-2 min-h-[6rem] list-disc space-y-1 pl-5 text-sm text-white/85 md:text-sm md:leading-6 lg:text-base">
+                <li>Certified carrier network in both countries</li>
+                <li>Unified shipment tracking</li>
+                <li>Incident and returns management</li>
+              </ul>
               <a
                 href="#"
                 class="mt-4 inline-flex items-center gap-2 rounded-full border border-[#00f49c] px-4 py-2 text-xs font-semibold text-white transition hover:border-[#00f49c] hover:bg-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:px-5 md:py-2.5 md:text-sm lg:px-6 lg:py-3 lg:text-base"
@@ -222,8 +301,12 @@
                 class="h-44 w-full rounded-2xl object-cover"
                 loading="lazy"
               />
-              <h4 class="mt-4 text-3xl font-extrabold md:text-4xl lg:text-5xl">98.7%</h4>
-              <p class="mt-1 min-h-[3rem] text-sm text-white/85 md:text-base md:leading-6 lg:text-lg">On Time Delivery Rate</p>
+              <h3 class="mt-4 text-lg font-semibold tracking-wide text-white md:text-xl lg:text-2xl">Reverse Logistics</h3>
+              <ul class="mt-2 min-h-[6rem] list-disc space-y-1 pl-5 text-sm text-white/85 md:text-sm md:leading-6 lg:text-base">
+                <li>Complete returns management</li>
+                <li>Inspection and reconditioning</li>
+                <li>Integration with your sales platform</li>
+              </ul>
               <a
                 href="#"
                 class="mt-4 inline-flex items-center gap-2 rounded-full border border-[#00f49c] px-4 py-2 text-xs font-semibold text-white transition hover:border-[#00f49c] hover:bg-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:px-5 md:py-2.5 md:text-sm lg:px-6 lg:py-3 lg:text-base"
@@ -239,67 +322,110 @@
       <!-- Why choose us section with supporting content and CTA -->
       <section id="why-choose-us" aria-labelledby="why-heading" class="pb-16">
         <div class="mx-auto max-w-6xl rounded-b-3xl rounded-t-none border border-[#cbd3d9] bg-white p-6 shadow-[var(--shadow-soft)] sm:p-8">
-          <h2 id="why-heading" class="text-center text-2xl font-extrabold sm:text-4xl md:text-5xl lg:text-6xl">Flexible capacity on demand</h2>
+          <h2 id="why-heading" class="text-center text-2xl font-extrabold sm:text-4xl md:text-5xl lg:text-6xl">Why TrackFlow</h2>
 
           <p class="mx-auto mt-4 w-full max-w-none text-center text-base leading-relaxed text-black/80 md:text-lg lg:text-xl">
             We have one of the world’s largest networks of independent shippers source the right truck for each load and drivers find loads that fit their schedules. Finding the optimal transportation solution is a seamless experience.
           </p>
 
+          <div class="mx-auto mt-6 grid w-full max-w-4xl gap-3" aria-label="TrackFlow key benefits">
+            <div class="flex items-center gap-3 rounded-2xl border border-black/10 bg-black/[0.03] px-4 py-3">
+              <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-black text-white" aria-hidden="true">
+                <i class="fa-solid fa-earth-americas"></i>
+              </span>
+              <p class="text-sm font-medium leading-relaxed text-black/85 md:text-base">Binational operation: The only operator with own infrastructure in the United States and Spain</p>
+            </div>
+
+            <div class="flex items-center gap-3 rounded-2xl border border-black/10 bg-black/[0.03] px-4 py-3">
+              <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-black text-white" aria-hidden="true">
+                <i class="fa-solid fa-users"></i>
+              </span>
+              <p class="text-sm font-medium leading-relaxed text-black/85 md:text-base">+130 professionals dedicated to your logistics</p>
+            </div>
+
+            <div class="flex items-center gap-3 rounded-2xl border border-black/10 bg-black/[0.03] px-4 py-3">
+              <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-black text-white" aria-hidden="true">
+                <i class="fa-solid fa-eye"></i>
+              </span>
+              <p class="text-sm font-medium leading-relaxed text-black/85 md:text-base">Own technology for total visibility of your inventory</p>
+            </div>
+
+            <div class="flex items-center gap-3 rounded-2xl border border-black/10 bg-black/[0.03] px-4 py-3">
+              <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-black text-white" aria-hidden="true">
+                <i class="fa-solid fa-bag-shopping"></i>
+              </span>
+              <p class="text-sm font-medium leading-relaxed text-black/85 md:text-base">E-commerce specialization in fashion, electronics, and cosmetics</p>
+            </div>
+          </div>
+
           <div class="mt-6 flex justify-center">
             <a
               href="./get-a-quote.html"
-              aria-label="Get a Spot Quote"
+              aria-label="Request info"
               class="inline-flex items-center justify-center rounded-full bg-[#00f49c] px-8 py-3 text-sm font-extrabold tracking-wide text-black transition hover:-translate-y-0.5 hover:bg-[#08d98d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:px-10 md:py-4 md:text-base lg:px-12 lg:py-5 lg:text-lg"
             >
-              Get a Spot Quote
+              Request info
             </a>
           </div>
+        </div>
+      </section>
 
-          <img
-            src="https://images.unsplash.com/photo-1529078155058-5d716f45d604?auto=format&fit=crop&w=1600&q=80"
-            alt="Delivery tracking interface and logistics monitoring"
-            class="mt-7 h-64 w-full rounded-3xl object-cover sm:h-80"
-            loading="lazy"
-          />
+      <!-- Contact section with icon list -->
+      <section id="contact" aria-labelledby="contact-heading" class="pb-16">
+        <div class="mx-auto max-w-6xl rounded-3xl border border-[#cbd3d9] bg-white p-6 shadow-[var(--shadow-soft)] sm:p-8">
+          <h2 id="contact-heading" class="text-center text-2xl font-extrabold sm:text-4xl md:text-5xl lg:text-6xl">Contact</h2>
+
+          <div class="mx-auto mt-6 grid w-full max-w-4xl gap-4" aria-label="Contact points">
+            <div class="flex items-center justify-center gap-3">
+              <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center text-sm text-black" aria-hidden="true">
+                <i class="fa-solid fa-envelope"></i>
+              </span>
+              <p class="text-sm leading-relaxed text-black/85 md:text-base">Email: comercial@trackflow.com</p>
+            </div>
+
+            <div class="flex items-center justify-center gap-3">
+              <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center text-sm text-black" aria-hidden="true">
+                <i class="fa-solid fa-flag-usa"></i>
+              </span>
+              <p class="text-sm leading-relaxed text-black/85 md:text-base">Los Angeles: +1 213 555 0147</p>
+            </div>
+
+            <div class="flex items-center justify-center gap-3">
+              <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center text-sm text-black" aria-hidden="true">
+                <i class="fa-solid fa-location-dot"></i>
+              </span>
+              <p class="text-sm leading-relaxed text-black/85 md:text-base">Zaragoza: +34 976 123 456</p>
+            </div>
+          </div>
         </div>
       </section>
     </main>
 
     <!-- Footer section with brand and social links -->
     <footer class="bg-black px-5 py-8 text-white" aria-label="Site footer">
-      <div class="mx-auto flex w-full max-w-6xl items-center justify-between gap-4">
-        <!-- Left aligned logo placeholder -->
-        <div class="flex items-center gap-2" aria-label="Footer brand logo placeholder">
-          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white text-black" aria-hidden="true">
-            <i class="fa-solid fa-box"></i>
-          </span>
-          <p class="text-sm font-extrabold tracking-wide text-white sm:text-base md:text-lg lg:text-xl">TRACKFLOW</p>
+      <div class="mx-auto w-full max-w-6xl">
+        <div class="flex items-center justify-between gap-4">
+          <!-- Left aligned logo placeholder -->
+          <div class="flex items-center gap-2" aria-label="Footer brand logo placeholder">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white text-black" aria-hidden="true">
+              <i class="fa-solid fa-box"></i>
+            </span>
+            <p class="text-sm font-extrabold tracking-wide text-white sm:text-base md:text-lg lg:text-xl">TRACKFLOW</p>
+          </div>
+
+          <!-- Social media icons row -->
+          <div class="flex items-center gap-3" aria-label="Social media links">
+            <a
+              href="#"
+              aria-label="Visit Trackflow on LinkedIn"
+              class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/35 text-white transition hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:h-11 md:w-11 md:text-lg"
+            >
+              <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+            </a>
+          </div>
         </div>
 
-        <!-- Social media icons row -->
-        <div class="flex items-center gap-3" aria-label="Social media links">
-          <a
-            href="#"
-            aria-label="Visit Trackflow on Facebook"
-            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/35 text-white transition hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:h-11 md:w-11 md:text-lg"
-          >
-            <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
-          </a>
-          <a
-            href="#"
-            aria-label="Visit Trackflow on Twitter"
-            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/35 text-white transition hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:h-11 md:w-11 md:text-lg"
-          >
-            <i class="fa-brands fa-twitter" aria-hidden="true"></i>
-          </a>
-          <a
-            href="#"
-            aria-label="Visit Trackflow on Instagram"
-            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/35 text-white transition hover:bg-white hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00f49c] md:h-11 md:w-11 md:text-lg"
-          >
-            <i class="fa-brands fa-instagram" aria-hidden="true"></i>
-          </a>
-        </div>
+        <p class="mt-4 text-center text-xs text-white/75 sm:text-sm">&copy; 2025 TrackFlow. All rights reserved.</p>
       </div>
     </footer>
   </body>
