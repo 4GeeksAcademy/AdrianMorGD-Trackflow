@@ -105,8 +105,8 @@ export async function createCandidate(payload: Record<string, unknown>): Promise
       linkedin: String(payload.linkedin ?? ""),
       cvUrl: String(payload.cvUrl ?? ""),
       yearsExperience: Number(payload.yearsExperience ?? 0),
-      status: (payload.status as Candidate["status"]) ?? "Applied",
-      stage: (payload.stage as Candidate["stage"]) ?? "Application",
+      status: (payload.status as Candidate["status"]) ?? "received",
+      stage: (payload.stage as Candidate["stage"]) ?? "pending",
       applicationDate: new Date().toISOString().slice(0, 10),
       notes: [],
     };
