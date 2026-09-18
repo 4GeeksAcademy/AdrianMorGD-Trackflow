@@ -10,26 +10,15 @@ import {
   patchCandidate,
   updateCandidate,
 } from "../../../lib/api";
-import type { Candidate, CandidateFormValues, CandidateNote } from "../../../types/candidate";
-
-const statusOptions = [
-  "Applied",
-  "Screening",
-  "Interview",
-  "Offer",
-  "Hired",
-  "Rejected",
-] as const;
-
-const stageOptions = [
-  "Application",
-  "Initial Review",
-  "Phone Screen",
-  "Technical Interview",
-  "Final Interview",
-  "Offer",
-  "Hired",
-] as const;
+import {
+  stageLabels,
+  stageOptions,
+  statusLabels,
+  statusOptions,
+  type Candidate,
+  type CandidateFormValues,
+  type CandidateNote,
+} from "../../../types/candidate";
 
 export default function CandidateDetailPage({
   params,
@@ -240,8 +229,8 @@ export default function CandidateDetailPage({
                 className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
               >
                 {statusOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
+                  <option key={option.value} value={option.value}>
+                    {option.label}
                   </option>
                 ))}
               </select>
@@ -252,8 +241,8 @@ export default function CandidateDetailPage({
                 className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
               >
                 {stageOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
+                  <option key={option.value} value={option.value}>
+                    {option.label}
                   </option>
                 ))}
               </select>
@@ -272,8 +261,8 @@ export default function CandidateDetailPage({
                 <InfoRow label="Experience" value={`${candidate.yearsExperience ?? 0} years`} />
                 <InfoRow label="LinkedIn" value={candidate.linkedin || "Not provided"} />
                 <InfoRow label="CV" value={candidate.cvUrl || "Not provided"} />
-                <InfoRow label="Status" value={candidate.status} />
-                <InfoRow label="Stage" value={candidate.stage} />
+                <InfoRow label="Status" value={statusLabels[candidate.status]} />
+                <InfoRow label="Stage" value={stageLabels[candidate.stage]} />
                 <InfoRow label="Application date" value={candidate.applicationDate} />
               </div>
             </div>
@@ -368,8 +357,8 @@ export default function CandidateDetailPage({
                         className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
                       >
                         {statusOptions.map((option) => (
-                          <option key={option} value={option}>
-                            {option}
+                          <option key={option.value} value={option.value}>
+                            {option.label}
                           </option>
                         ))}
                       </select>
@@ -383,8 +372,8 @@ export default function CandidateDetailPage({
                         className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
                       >
                         {stageOptions.map((option) => (
-                          <option key={option} value={option}>
-                            {option}
+                          <option key={option.value} value={option.value}>
+                            {option.label}
                           </option>
                         ))}
                       </select>

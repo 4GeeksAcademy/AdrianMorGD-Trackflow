@@ -5,26 +5,14 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { createCandidate, getCandidates } from "../lib/api";
 import { emptyCandidateForm } from "../lib/mock-data";
-import type { Candidate, CandidateFormValues } from "../types/candidate";
-
-const statusOptions = [
-  "Applied",
-  "Screening",
-  "Interview",
-  "Offer",
-  "Hired",
-  "Rejected",
-] as const;
-
-const stageOptions = [
-  "Application",
-  "Initial Review",
-  "Phone Screen",
-  "Technical Interview",
-  "Final Interview",
-  "Offer",
-  "Hired",
-] as const;
+import {
+  stageLabels,
+  stageOptions,
+  statusLabels,
+  statusOptions,
+  type Candidate,
+  type CandidateFormValues,
+} from "../types/candidate";
 
 const initialCandidateForm: CandidateFormValues = { ...emptyCandidateForm };
 
@@ -168,8 +156,8 @@ function DashboardContent() {
                 >
                   <option value="all">All status</option>
                   {statusOptions.map((status) => (
-                    <option key={status} value={status}>
-                      {status}
+                    <option key={status.value} value={status.value}>
+                      {status.label}
                     </option>
                   ))}
                 </select>
@@ -180,8 +168,8 @@ function DashboardContent() {
                 >
                   <option value="all">All stages</option>
                   {stageOptions.map((stage) => (
-                    <option key={stage} value={stage}>
-                      {stage}
+                    <option key={stage.value} value={stage.value}>
+                      {stage.label}
                     </option>
                   ))}
                 </select>
@@ -213,7 +201,7 @@ function DashboardContent() {
                         <div className="flex items-center gap-2">
                           <h3 className="text-lg font-semibold text-white">{candidate.name}</h3>
                           <span className="rounded-full border border-slate-600 bg-slate-800 px-2 py-0.5 text-[10px] uppercase tracking-[0.15em] text-slate-300">
-                            {candidate.status}
+                            {statusLabels[candidate.status]}
                           </span>
                         </div>
                         <p className="mt-1 text-sm text-slate-300">{candidate.position}</p>
@@ -222,7 +210,7 @@ function DashboardContent() {
 
                       <div className="flex flex-wrap gap-2 text-xs text-slate-200">
                         <span className="rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-1">
-                          Stage: {candidate.stage}
+                          Stage: {stageLabels[candidate.stage]}
                         </span>
                         <span className="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-1">
                           {candidate.yearsExperience ?? 0} yrs experience
@@ -322,8 +310,8 @@ function DashboardContent() {
                     className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
                   >
                     {statusOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
+                      <option key={option.value} value={option.value}>
+                        {option.label}
                       </option>
                     ))}
                   </select>
@@ -338,8 +326,8 @@ function DashboardContent() {
                     className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
                   >
                     {stageOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
+                      <option key={option.value} value={option.value}>
+                        {option.label}
                       </option>
                     ))}
                   </select>
