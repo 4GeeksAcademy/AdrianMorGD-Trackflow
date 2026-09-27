@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+:root {
+  --navy: #101a2b;
+  --canvas: #f4f7fa;
+  --mint: #00f49c;
+  --muted: #718096;
+}
+
+@theme inline {
+  --color-navy: var(--navy);
+  --color-mint: var(--mint);
+  --font-sans: Arial, Helvetica, sans-serif;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--canvas); color: var(--navy); font-family: Arial, Helvetica, sans-serif; }
+button, a, input { font: inherit; }
+.focus-ring:focus-visible { outline: 3px solid var(--mint); outline-offset: 3px; }

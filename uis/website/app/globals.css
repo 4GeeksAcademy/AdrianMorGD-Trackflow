@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+:root {
+  --mint: #00f49c;
+  --ink: #0b0b0b;
+  --paper: #ffffff;
+  --muted: #667078;
+}
+
+@theme inline {
+  --color-mint: var(--mint);
+  --color-ink: var(--ink);
+  --font-sans: var(--font-manrope);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-manrope), Arial, sans-serif;
+}
+
+::selection { background: var(--mint); color: var(--ink); }
+
+.dot-grid {
+  background-image: radial-gradient(#d9e0e3 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.focus-ring:focus-visible {
+  outline: 3px solid var(--mint);
+  outline-offset: 4px;
+}
