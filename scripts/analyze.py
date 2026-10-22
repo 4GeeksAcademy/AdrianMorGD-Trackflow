@@ -4,360 +4,51 @@
 from __future__ import annotations
 
 import argparse
-import csv
-import re
 import sys
-from collections import Counter
-from datetime import date
 from pathlib import Path
 from typing import TextIO
 
-
-CARRIERS_BY_COUNTRY = {
-	"US": {"UPS", "FEDEX", "DHL_US"},
-	"ES": {"MRW", "SEUR", "DHL_ES", "LOCAL_ES"},
-}
-ALL_CARRIERS = set().union(*CARRIERS_BY_COUNTRY.values())
-CATEGORIES = (
-	"LOST_PARCEL",
-	"DELAYED_DELIVERY",
-	"WRONG_ADDRESS",
-	"RETURN_REQUEST",
-	"DAMAGE",
+from adrianmorgd_trackflow.incidents.analyzer import (
+    analyze,
+    export_summary,
+    print_summary,
+    read_records,
 )
-STATUSES = ("OPEN", "CLOSED", "DISCARDED")
-CUSTOMER_TYPES = ("B2B", "B2C")
-REQUIRED_COLUMNS = {
-	"incident_id",
-	"date",
-	"country",
-	"customer_type",
-	"tracking_number",
-	"carrier",
-	"category",
-	"description",
-	"status",
-	"customer_email",
-}
-INCIDENT_ID_PATTERN = re.compile(r"TRF-\d{6}\Z")
-EMAIL_PATTERN = re.compile(r"[^\s@]+@[^\s@]+\.[^\s@]+\Z")
-
-INVALID_LABELS = {
-	"malformed_row": "Malformed CSV row",
-	"incident_id": "Missing or invalid incident ID",
-	"duplicate_incident_id": "Duplicate incident ID",
-	"date": "Missing or invalid date",
-	"country": "Missing or invalid country",
-	"customer_type": "Missing or invalid customer type",
-	"carrier": "Missing or invalid carrier",
-	"carrier_country": "Carrier/country mismatch",
-	"tracking_number": "Invalid or missing tracking number",
-	"category": "Invalid or missing category",
-	"description": "Empty or too-short description",
-	"status": "Missing or invalid status",
-	"email": "Invalid or missing email",
-	"closed_without_score": "Closed incident, no score",
-	"invalid_score": "Satisfaction score out of range or invalid",
-}
-
-
-def validate_record(row: dict[str, str | None], extra_columns: bool) -> list[str]:
-	"""Return rule identifiers for a row; never include source values in errors."""
-	issues: list[str] = []
-	if extra_columns:
-		issues.append("malformed_row")
-
-	def value(field: str) -> str:
-		return (row.get(field) or "").strip()
-
-	incident_id = value("incident_id")
-	if not INCIDENT_ID_PATTERN.fullmatch(incident_id):
-		issues.append("incident_id")
-
-	raw_date = value("date")
-	try:
-		if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", raw_date):
-			raise ValueError
-		date.fromisoformat(raw_date)
-	except ValueError:
-		issues.append("date")
-
-	country = value("country").upper()
-	if country not in CARRIERS_BY_COUNTRY:
-		issues.append("country")
-
-	customer_type = value("customer_type").upper()
-	if customer_type not in CUSTOMER_TYPES:
-		issues.append("customer_type")
-
-	carrier = value("carrier").upper()
-	if not carrier:
-		issues.append("carrier")
-	elif carrier not in ALL_CARRIERS:
-		issues.append("carrier")
-	elif country in CARRIERS_BY_COUNTRY and carrier not in CARRIERS_BY_COUNTRY[country]:
-		issues.append("carrier_country")
-
-	tracking_number = value("tracking_number")
-	if len(tracking_number) < 8:
-		issues.append("tracking_number")
-
-	if value("category").upper() not in CATEGORIES:
-		issues.append("category")
-
-	if len(value("description")) < 5:
-		issues.append("description")
-
-	status = value("status").upper()
-	if status not in STATUSES:
-		issues.append("status")
-
-	email = value("customer_email")
-	if not EMAIL_PATTERN.fullmatch(email):
-		issues.append("email")
-
-	score_text = value("satisfaction_score")
-	score: int | None = None
-	if score_text:
-		try:
-			# Reject decimal strings such as "4.0"; the field is an integer.
-			score = int(score_text)
-		except ValueError:
-			issues.append("invalid_score")
-		else:
-			if not 1 <= score <= 5:
-				issues.append("invalid_score")
-
-	if status == "CLOSED" and not score_text:
-		issues.append("closed_without_score")
-
-	return issues
-
-
-def read_records(path: Path) -> tuple[list[dict[str, str | None]], int]:
-	"""Load records and return number of rows with extra CSV cells."""
-	try:
-		with path.open("r", encoding="utf-8-sig", newline="") as csv_file:
-			reader = csv.DictReader(csv_file)
-			if reader.fieldnames is None:
-				raise ValueError("The CSV file is empty or has no header row.")
-
-			headers = [header.strip() if header else "" for header in reader.fieldnames]
-			if len(headers) != len(set(headers)):
-				raise ValueError("The CSV contains duplicate column names.")
-			missing_columns = sorted(REQUIRED_COLUMNS - set(headers))
-			if missing_columns:
-				raise ValueError(
-					"The CSV is missing required columns: " + ", ".join(missing_columns)
-				)
-
-			records: list[dict[str, str | None]] = []
-			extra_rows = 0
-			for raw_row in reader:
-				extra_values = raw_row.pop(None, None)
-				row_has_extra = bool(extra_values)
-				if row_has_extra:
-					extra_rows += 1
-				record = {
-					(key.strip() if key else ""): value
-					for key, value in raw_row.items()
-				}
-				record["__malformed_extra_cells__"] = row_has_extra
-				records.append(record)
-			return records, extra_rows
-	except OSError as error:
-		raise ValueError(f"Unable to read input file: {error.strerror or 'file error'}.") from None
-	except csv.Error:
-		raise ValueError("The input file is not a well-formed CSV.") from None
-
-
-def percentage(part: int, total: int) -> float:
-	return (part / total * 100) if total else 0.0
-
-
-def analyze(records: list[dict[str, str | None]], extra_rows: int) -> dict[str, object]:
-	issue_counts: Counter[str] = Counter()
-	valid_records: list[dict[str, str | None]] = []
-	seen_incident_ids: set[str] = set()
-	for record in records:
-		row_has_extra = bool(record.get("__malformed_extra_cells__", False))
-		issues = validate_record(record, row_has_extra)
-		incident_id = (record.get("incident_id") or "").strip()
-		if INCIDENT_ID_PATTERN.fullmatch(incident_id):
-			if incident_id in seen_incident_ids:
-				issues.append("duplicate_incident_id")
-			else:
-				seen_incident_ids.add(incident_id)
-		issue_counts.update(issues)
-		if not issues:
-			valid_records.append(record)
-
-	categories = Counter((record.get("category") or "").strip().upper() for record in valid_records)
-	statuses = Counter((record.get("status") or "").strip().upper() for record in valid_records)
-	countries = Counter((record.get("country") or "").strip().upper() for record in valid_records)
-
-	scored_closed: list[int] = []
-	for record in valid_records:
-		if (record.get("status") or "").strip().upper() == "CLOSED":
-			score = (record.get("satisfaction_score") or "").strip()
-			if score:
-				scored_closed.append(int(score))
-
-	return {
-		"total": len(records),
-		"valid": len(valid_records),
-		"invalid": len(records) - len(valid_records),
-		"issue_counts": issue_counts,
-		"categories": categories,
-		"statuses": statuses,
-		"countries": countries,
-		"scored_closed": scored_closed,
-	}
-
-
-def print_breakdown(title: str, counts: Counter[str], labels: tuple[str, ...], total: int) -> None:
-	print(f"\n{title}")
-	if not total:
-		print("  No valid records.")
-		return
-	for label in labels:
-		count = counts.get(label, 0)
-		print(f"  ├─ {label:<25} {count:>6}  ({percentage(count, total):5.1f}%)")
-
-
-def print_summary(source: str, summary: dict[str, object]) -> None:
-	total = int(summary["total"])
-	valid = int(summary["valid"])
-	invalid = int(summary["invalid"])
-	issue_counts = summary["issue_counts"]
-	assert isinstance(issue_counts, Counter)
-
-	print("=" * 60)
-	print("  TRACKFLOW — INCIDENT REPORT ANALYSIS")
-	print(f"  Source file: {source}")
-	print("=" * 60)
-	print(f"\nTOTAL RECORDS IN FILE .......... {total}")
-	print(f"  ├─ Valid records .............. {valid}")
-	print(f"  └─ Invalid / incomplete ....... {invalid}")
-
-	print("\nINVALID RECORDS BREAKDOWN")
-	found_issue = False
-	for rule, label in INVALID_LABELS.items():
-		count = issue_counts.get(rule, 0)
-		if count:
-			found_issue = True
-			print(f"  ├─ {label:<39} {count:>5}")
-	if not found_issue:
-		print("  No invalid records.")
-	print("  (A record with multiple problems is counted in each applicable rule.)")
-
-	categories = summary["categories"]
-	statuses = summary["statuses"]
-	countries = summary["countries"]
-	assert isinstance(categories, Counter)
-	assert isinstance(statuses, Counter)
-	assert isinstance(countries, Counter)
-	print_breakdown("BREAKDOWN BY CATEGORY (valid records)", categories, CATEGORIES, valid)
-	print_breakdown("BREAKDOWN BY STATUS (valid records)", statuses, STATUSES, valid)
-	print_breakdown("BREAKDOWN BY COUNTRY (valid records)", countries, ("US", "ES"), valid)
-
-	scores = summary["scored_closed"]
-	assert isinstance(scores, list)
-	closed_count = statuses.get("CLOSED", 0)
-	print("\nSATISFACTION INDEX (valid closed incidents)")
-	print(f"  Scored incidents: {len(scores)} of {closed_count}")
-	average = sum(scores) / len(scores) if scores else None
-	print(f"  Average score: {average:.2f} / 5.00" if average is not None else "  Average score: N/A")
-	score_labels = {
-		1: "Very dissatisfied",
-		2: "Dissatisfied",
-		3: "Neutral",
-		4: "Satisfied",
-		5: "Very satisfied",
-	}
-	score_counts = Counter(scores)
-	for score, label in score_labels.items():
-		print(f"  ├─ Score {score} ({label}){' ' * max(1, 19 - len(label))} {score_counts[score]}")
-	print("\n" + "=" * 60)
-
-
-def export_summary(path: Path, summary: dict[str, object]) -> None:
-	"""Export aggregate metrics only. No source row values are written."""
-	categories = summary["categories"]
-	statuses = summary["statuses"]
-	countries = summary["countries"]
-	issue_counts = summary["issue_counts"]
-	scores = summary["scored_closed"]
-	assert isinstance(categories, Counter)
-	assert isinstance(statuses, Counter)
-	assert isinstance(countries, Counter)
-	assert isinstance(issue_counts, Counter)
-	assert isinstance(scores, list)
-
-	metrics: list[tuple[str, str]] = [
-		("total_records", str(summary["total"])),
-		("valid_records", str(summary["valid"])),
-		("invalid_records", str(summary["invalid"])),
-	]
-	metrics.extend((f"invalid_{rule}", str(issue_counts.get(rule, 0))) for rule in INVALID_LABELS)
-	metrics.extend((f"category_{key}", str(categories.get(key, 0))) for key in CATEGORIES)
-	metrics.extend((f"status_{key}", str(statuses.get(key, 0))) for key in STATUSES)
-	metrics.extend((f"country_{key}", str(countries.get(key, 0))) for key in ("US", "ES"))
-	metrics.extend(
-		[
-			("closed_scored_incidents", str(len(scores))),
-			("closed_incidents", str(statuses.get("CLOSED", 0))),
-			(
-				"average_satisfaction_score",
-				f"{sum(scores) / len(scores):.2f}" if scores else "",
-			),
-		]
-	)
-	score_counts = Counter(scores)
-	metrics.extend((f"satisfaction_score_{score}", str(score_counts[score])) for score in range(1, 6))
-
-	try:
-		with path.open("w", encoding="utf-8", newline="") as output:
-			writer = csv.writer(output)
-			writer.writerow(("metric", "value"))
-			writer.writerows(metrics)
-	except OSError as error:
-		raise ValueError(f"Unable to write results file: {error.strerror or 'file error'}.") from None
 
 
 def main(argv: list[str] | None = None, input_stream: TextIO = sys.stdin) -> int:
-	parser = argparse.ArgumentParser(description="Analyze a TrackFlow incidents CSV file.")
-	parser.add_argument("csv_file", type=Path, help="Path to the incidents CSV file")
-	args = parser.parse_args(argv)
+    parser = argparse.ArgumentParser(description="Analyze a TrackFlow incidents CSV file.")
+    parser.add_argument("csv_file", type=Path, help="Path to the incidents CSV file")
+    args = parser.parse_args(argv)
 
-	try:
-		records, extra_rows = read_records(args.csv_file)
-		summary = analyze(records, extra_rows)
-	except ValueError as error:
-		print(f"Error: {error}", file=sys.stderr)
-		return 2
+    try:
+        records, extra_rows = read_records(args.csv_file)
+        summary = analyze(records, extra_rows)
+    except ValueError as error:
+        print(f"Error: {error}", file=sys.stderr)
+        return 2
 
-	print_summary(args.csv_file.name, summary)
-	try:
-		print("\nExport results to CSV? [y/n]")
-		print("Your choice: ", end="", flush=True)
-		choice = input_stream.readline().strip().lower()
-		if not choice:
-			print("No choice received; results were not exported.")
-			return 0
-		if choice not in {"y", "n"}:
-			print("Invalid choice. Please enter 'y' or 'n'.")
-			return 2
-		if choice == "y":
-			export_summary(Path("results.csv"), summary)
-			print("Aggregate results exported to results.csv (no email addresses included).")
-		else:
-			print("Results were not exported.")
-	except ValueError as error:
-		print(f"Error: {error}", file=sys.stderr)
-		return 2
-	return 0
+    print_summary(args.csv_file.name, summary)
+    try:
+        print("\nExport results to CSV? [y/n]")
+        print("Your choice: ", end="", flush=True)
+        choice = input_stream.readline().strip().lower()
+        if not choice:
+            print("No choice received; results were not exported.")
+            return 0
+        if choice not in {"y", "n"}:
+            print("Invalid choice. Please enter 'y' or 'n'.")
+            return 2
+        if choice == "y":
+            export_summary(Path("results.csv"), summary)
+            print("Aggregate results exported to results.csv (no email addresses included).")
+        else:
+            print("Results were not exported.")
+    except ValueError as error:
+        print(f"Error: {error}", file=sys.stderr)
+        return 2
+    return 0
 
 
 if __name__ == "__main__":
-	raise SystemExit(main())
+    raise SystemExit(main())
