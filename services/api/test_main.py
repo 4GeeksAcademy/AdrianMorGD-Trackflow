@@ -4,7 +4,9 @@ import unittest
 
 from fastapi.testclient import TestClient
 
-from services.api.main import app
+from services.api import main as api_main
+
+app = api_main.app
 
 
 CSV_HEADER = (
@@ -20,6 +22,7 @@ VALID_ROW = (
 class AnalyzeIncidentsEndpointTests(unittest.TestCase):
     def setUp(self) -> None:
         self.client = TestClient(app)
+        api_main._last_analysis = None
 
     def test_returns_aggregates_without_personal_data(self) -> None:
         response = self.client.post(
@@ -57,6 +60,44 @@ class AnalyzeIncidentsEndpointTests(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 400)
+        self.assertIn("does not match the incidents CSV format", response.json()["detail"])
+
+    def test_rejects_empty_csv_with_descriptive_message(self) -> None:
+        response = self.client.post(
+            "/api/incidents/analyze",
+            files={"file": ("empty.csv", "", "text/csv")},
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("uploaded CSV is empty", response.json()["detail"])
+
+    def test_rejects_header_only_csv_with_descriptive_message(self) -> None:
+        response = self.client.post(
+            "/api/incidents/analyze",
+            files={"file": ("incidents.csv", CSV_HEADER, "text/csv")},
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("no incident records", response.json()["detail"])
+
+    def test_rejects_malformed_csv_quoting_with_descriptive_message(self) -> None:
+        malformed_csv = CSV_HEADER + 'TRF-000001,2026-10-01,US,B2B,TRACK123,UPS,LOST_PARCEL,"unfinished,CLOSED,customer@example.com,4\n'
+        response = self.client.post(
+            "/api/incidents/analyze",
+            files={"file": ("incidents.csv", malformed_csv, "text/csv")},
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("CSV structure is malformed", response.json()["detail"])
+
+    def test_rejects_non_utf8_csv_with_descriptive_message(self) -> None:
+        response = self.client.post(
+            "/api/incidents/analyze",
+            files={"file": ("incidents.csv", b"\xff\xfe\x00", "text/csv")},
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("UTF-8 encoding", response.json()["detail"])
 
     def test_rejects_non_csv_content_type(self) -> None:
         response = self.client.post(
@@ -65,6 +106,28 @@ class AnalyzeIncidentsEndpointTests(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 415)
+        self.assertIn("Upload a CSV file using multipart/form-data", response.json()["detail"])
+
+    def test_export_returns_404_until_analysis_exists(self) -> None:
+        response = self.client.get("/api/incidents/results/export")
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_export_downloads_last_analysis_as_csv_without_personal_data(self) -> None:
+        analysis_response = self.client.post(
+            "/api/incidents/analyze",
+            files={"file": ("incidents.csv", CSV_HEADER + VALID_ROW, "text/csv")},
+        )
+        self.assertEqual(analysis_response.status_code, 200)
+
+        response = self.client.get("/api/incidents/results/export")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("text/csv", response.headers["content-type"])
+        self.assertIn('attachment; filename="incident-analysis.csv"', response.headers["content-disposition"])
+        self.assertIn("metric,value", response.text)
+        self.assertIn("total_records,1", response.text)
+        self.assertNotIn("customer@example.com", response.text)
 
 
 if __name__ == "__main__":

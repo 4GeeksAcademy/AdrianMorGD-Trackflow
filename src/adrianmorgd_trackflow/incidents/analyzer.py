@@ -114,10 +114,15 @@ def validate_record(row: dict[str, str | None], extra_columns: bool) -> list[str
 
 def read_records_from_text(text: str) -> tuple[list[dict[str, str | None]], int]:
     """Parse CSV text, validating its header and preserving malformed-row metadata."""
+    if not text.strip():
+        raise ValueError("The uploaded CSV is empty. Include the required header and incident records.")
+    if "\x00" in text:
+        raise ValueError("The uploaded file contains null bytes and is not valid CSV text.")
+
     try:
-        reader = csv.DictReader(io.StringIO(text, newline=""))
+        reader = csv.DictReader(io.StringIO(text, newline=""), strict=True)
         if reader.fieldnames is None:
-            raise ValueError("The CSV file is empty or has no header row.")
+            raise ValueError("The CSV has no header row. Include the required column names.")
 
         headers = [header.strip() if header else "" for header in reader.fieldnames]
         if len(headers) != len(set(headers)):
@@ -125,7 +130,8 @@ def read_records_from_text(text: str) -> tuple[list[dict[str, str | None]], int]
         missing_columns = sorted(REQUIRED_COLUMNS - set(headers))
         if missing_columns:
             raise ValueError(
-                "The CSV is missing required columns: " + ", ".join(missing_columns)
+            "The file does not match the incidents CSV format. Missing required columns: "
+            + ", ".join(missing_columns)
             )
 
         records: list[dict[str, str | None]] = []
@@ -141,9 +147,13 @@ def read_records_from_text(text: str) -> tuple[list[dict[str, str | None]], int]
             }
             record["__malformed_extra_cells__"] = row_has_extra
             records.append(record)
+        if not records:
+            raise ValueError("The CSV contains a header but no incident records.")
         return records, extra_rows
     except csv.Error:
-        raise ValueError("The input file is not a well-formed CSV.") from None
+        raise ValueError(
+            "The CSV structure is malformed. Check that every quoted field is properly closed."
+        ) from None
 
 
 def read_records(path: Path) -> tuple[list[dict[str, str | None]], int]:
@@ -283,6 +293,14 @@ def print_summary(source: str, summary: dict[str, object]) -> None:
 
 def export_summary(path: Path, summary: dict[str, object]) -> None:
     """Export aggregate metrics only. No source row values are written."""
+    try:
+        path.write_text(serialize_summary(summary), encoding="utf-8", newline="")
+    except OSError as error:
+        raise ValueError(f"Unable to write results file: {error.strerror or 'file error'}.") from None
+
+
+def serialize_summary(summary: dict[str, object]) -> str:
+    """Serialize aggregate metrics to CSV text, never including source row values."""
     categories = summary["categories"]
     statuses = summary["statuses"]
     countries = summary["countries"]
@@ -316,10 +334,8 @@ def export_summary(path: Path, summary: dict[str, object]) -> None:
     score_counts = Counter(scores)
     metrics.extend((f"satisfaction_score_{score}", str(score_counts[score])) for score in range(1, 6))
 
-    try:
-        with path.open("w", encoding="utf-8", newline="") as output:
-            writer = csv.writer(output)
-            writer.writerow(("metric", "value"))
-            writer.writerows(metrics)
-    except OSError as error:
-        raise ValueError(f"Unable to write results file: {error.strerror or 'file error'}.") from None
+    output = io.StringIO(newline="")
+    writer = csv.writer(output)
+    writer.writerow(("metric", "value"))
+    writer.writerows(metrics)
+    return output.getvalue()

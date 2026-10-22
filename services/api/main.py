@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi.responses import Response
 
 from adrianmorgd_trackflow.incidents.analyzer import (
     CATEGORIES,
     INVALID_LABELS,
     STATUSES,
     analyze_csv_bytes,
+    serialize_summary,
 )
 
 app = FastAPI(title="TrackFlow API")
@@ -19,6 +21,7 @@ ALLOWED_CONTENT_TYPES = {
     "application/vnd.ms-excel",
     "application/octet-stream",
 }
+_last_analysis: dict[str, object] | None = None
 
 
 @app.get("/")
@@ -84,6 +87,8 @@ def _build_api_report(summary: dict[str, object]) -> dict[str, object]:
 @app.post("/api/incidents/analyze")
 async def analyze_incidents(file: UploadFile = File(...)) -> dict[str, object]:
     """Analyze an uploaded CSV; personally identifiable data is never returned."""
+    global _last_analysis
+
     if file.content_type not in ALLOWED_CONTENT_TYPES:
         raise HTTPException(status_code=415, detail="Upload a CSV file using multipart/form-data.")
 
@@ -95,4 +100,22 @@ async def analyze_incidents(file: UploadFile = File(...)) -> dict[str, object]:
         summary = analyze_csv_bytes(content)
     except ValueError as error:
         raise HTTPException(status_code=400, detail=str(error)) from None
+    _last_analysis = summary
     return _build_api_report(summary)
+
+
+@app.get("/api/incidents/results/export")
+async def export_last_analysis() -> Response:
+    """Download aggregate metrics from the most recent analysis as CSV."""
+    if _last_analysis is None:
+        raise HTTPException(
+            status_code=404,
+            detail="No analysis is available. Upload a CSV to /api/incidents/analyze first.",
+        )
+
+    csv_content = serialize_summary(_last_analysis)
+    return Response(
+        content=csv_content,
+        media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": 'attachment; filename="incident-analysis.csv"'},
+    )
