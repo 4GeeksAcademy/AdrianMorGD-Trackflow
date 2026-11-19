@@ -38,6 +38,19 @@ class AnalyzeIncidentsEndpointTests(unittest.TestCase):
         self.assertEqual(report["satisfaction"]["average_score"], 4.0)
         self.assertNotIn("customer@example.com", response.text)
 
+    def test_allows_backoffice_origin_for_browser_api_requests(self) -> None:
+        response = self.client.options(
+            "/api/incidents/analyze",
+            headers={
+                "Origin": "http://localhost:3000",
+                "Access-Control-Request-Method": "POST",
+                "Access-Control-Request-Headers": "content-type",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers["access-control-allow-origin"], "http://localhost:3000")
+
     def test_invalid_row_is_counted_by_rule_without_echoing_values(self) -> None:
         invalid_row = VALID_ROW.replace("TRACK123", "short").replace(
             "customer@example.com", "private@example.com"
