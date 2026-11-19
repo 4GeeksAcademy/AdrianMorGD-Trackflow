@@ -47,10 +47,13 @@ El proyecto está en una fase inicial de definición y prototipado. El repositor
 - Implementada la ruta `/` como punto de entrada para operaciones internas, con navegación de Overview, Inventory, Shipments y Returns.
 - Visible una vista inicial de inventario por almacén para Los Ángeles y Zaragoza, además de métricas de pedidos, envíos y devoluciones basadas en el contexto de TrackFlow.
 - Añadido README local y verificados `npm run lint` y `npm run build` desde `uis/backoffice`.
+- Añadida la página `/incidents` con carga por selector/arrastrar y soltar, resumen de análisis, desglose de incidencias inválidas y descarga CSV.
+- La API FastAPI ahora habilita CORS para `http://localhost:3000` y `http://127.0.0.1:3000`; los orígenes se pueden reemplazar mediante `TRACKFLOW_CORS_ORIGINS`.
+- Verificados `npm run build` y `npm run lint` en `uis/backoffice`; la compilación incluye `/incidents`.
 
 ## No implementado todavía
 
-- API centralizada para inventario, envíos, tracking, devoluciones, CX o reporting.
+- API productiva centralizada para inventario, envíos, tracking, devoluciones, CX o reporting. Existe un prototipo FastAPI para analizar CSV de incidencias, pendiente de despliegue y persistencia productiva.
 - Conexiones reales con WMS, ERP, CRM o las APIs de los ocho transportistas.
 - Base de datos, migraciones, persistencia y sincronización entre Los Ángeles y Zaragoza.
 - Ingesta automática de pedidos desde email.
