@@ -1,6 +1,6 @@
 # Progress — TrackFlow
 
-**Última actualización:** 2026-09-27
+**Última actualización:** 2026-11-19
 
 ## Estado general
 
@@ -51,6 +51,18 @@ El proyecto está en una fase inicial de definición y prototipado. El repositor
 - La API FastAPI ahora habilita CORS para `http://localhost:3000` y `http://127.0.0.1:3000`; los orígenes se pueden reemplazar mediante `TRACKFLOW_CORS_ORIGINS`.
 - Verificados `npm run build` y `npm run lint` en `uis/backoffice`; la compilación incluye `/incidents`.
 
+### Modelo de autenticación
+
+- Añadido el modelo `User` del API con `id`, `email`, `hashed_password`, `is_active`, `role` y `created_at`, más un repositorio TinyDB para guardarlo y buscarlo.
+- Los roles de usuario están limitados al enum `admin`, `manager` y `user`; `POST /users` asigna `user` por defecto y evita devolver el hash de contraseña.
+- Añadida la capa `UserService` con operaciones de creación, consulta por ID/email, actualización y eliminación; expuesta mediante `POST /users`, `GET /users`, `GET /users/{id}`, `PUT /users/{id}` y `DELETE /users/{id}`.
+- El registro recibe una contraseña en texto solo durante el transporte y la guarda con hash Argon2; puede crear un `Profile` opcional con nombre, teléfono y dirección, separado de `User`.
+- Añadido `POST /auth/token` con JWT Bearer de 30 minutos. El listado es solo para administradores; lectura, actualización y eliminación requieren ser propietario o admin, y cambiar `role` requiere admin.
+- Las pruebas específicas de API y usuarios pasan (22 pruebas); revisiones de Pylance y `git diff --check` no reportaron errores.
+- El modelo rechaza campos adicionales para evitar incorporar nombre visible o datos de contacto no solicitados.
+- Declarada la dependencia TinyDB; persiste como almacenamiento local de prototipo, no como base productiva.
+- Añadidas pruebas del esquema, exclusión de atributos extra y persistencia/consulta.
+
 ## No implementado todavía
 
 - API productiva centralizada para inventario, envíos, tracking, devoluciones, CX o reporting. Existe un prototipo FastAPI para analizar CSV de incidencias, pendiente de despliegue y persistencia productiva.
@@ -63,7 +75,7 @@ El proyecto está en una fase inicial de definición y prototipado. El repositor
 - Ticketing omnicanal, CRM, scoring de salud de clientes y alertas de renovación.
 - Pipelines analíticos, dashboards operativos/ejecutivos e informes automáticos.
 - Logs, métricas, trazas, monitorización, alertas, backups y health checks centralizados.
-- CI/CD, despliegues, autenticación, autorización y políticas de seguridad productivas.
+- CI/CD, despliegues y políticas de seguridad productivas. La autenticación JWT implementada es un prototipo y requiere configurar `TRACKFLOW_JWT_SECRET`.
 
 ## Próximos pasos recomendados
 

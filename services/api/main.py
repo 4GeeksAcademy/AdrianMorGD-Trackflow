@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import os
+from datetime import datetime, timezone
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
+from tinydb import TinyDB
 
 from adrianmorgd_trackflow.incidents.analyzer import (
     CATEGORIES,
@@ -15,8 +17,37 @@ from adrianmorgd_trackflow.incidents.analyzer import (
     analyze_csv_bytes,
     serialize_summary,
 )
+from services.api.auth import CurrentUser, create_access_token, verify_password
+from services.api.user_service import UserService
+from services.api.suppliers import (
+    Supplier,
+    SupplierCountry,
+    SupplierCreate,
+    SupplierProductCategory,
+    SupplierRateUpdate,
+    SupplierStatusUpdate,
+)
+from services.api.users import (
+    ProfileRepository,
+    User,
+    UserCreate,
+    UserLogin,
+    UserRepository,
+    UserResponse,
+    UserRole,
+    UserUpdate,
+)
 
 app = FastAPI(title="TrackFlow API")
+
+_users_database_path = os.getenv("TRACKFLOW_USERS_DB_PATH", "data/users.json")
+_users_database = TinyDB(_users_database_path)
+_suppliers_database_path = os.getenv("TRACKFLOW_SUPPLIERS_DB_PATH", "data/suppliers.json")
+_suppliers_database = TinyDB(_suppliers_database_path)
+_suppliers_table = _suppliers_database.table("suppliers")
+user_repository = UserRepository(_users_database)
+profile_repository = ProfileRepository(_users_database)
+user_service = UserService(user_repository, profile_repository)
 
 _default_cors_origins = "http://localhost:3000,http://127.0.0.1:3000"
 _cors_origins = [
@@ -27,8 +58,8 @@ _cors_origins = [
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_cors_origins,
-    allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["Content-Type"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 MAX_UPLOAD_BYTES = 10 * 1024 * 1024
@@ -44,6 +75,170 @@ _last_analysis: dict[str, object] | None = None
 async def health_check() -> dict[str, str]:
     """Report that the API process is responding."""
     return {"status": "ok"}
+
+
+@app.post("/suppliers", response_model=Supplier, status_code=201)
+async def create_supplier(supplier_data: SupplierCreate) -> Supplier:
+    """Validate, persist, and return a supplier with its TinyDB document ID."""
+    document = supplier_data.model_dump(mode="json")
+    document_id = _suppliers_table.insert(document)
+    return Supplier.model_validate({**document, "id": document_id})
+
+
+@app.get("/suppliers", response_model=list[Supplier])
+async def list_suppliers(
+    country: SupplierCountry | None = None,
+    product_category: SupplierProductCategory | None = None,
+) -> list[Supplier]:
+    """List suppliers, optionally filtering by country and product category."""
+    suppliers = [
+        Supplier.model_validate({**document, "id": document.doc_id})
+        for document in _suppliers_table.all()
+    ]
+    if country is not None:
+        suppliers = [supplier for supplier in suppliers if supplier.country == country]
+    if product_category is not None:
+        suppliers = [
+            supplier
+            for supplier in suppliers
+            if product_category in supplier.product_categories
+        ]
+    return suppliers
+
+
+@app.get("/suppliers/{supplier_id}", response_model=Supplier)
+async def get_supplier(supplier_id: int) -> Supplier:
+    """Return one supplier by TinyDB document ID, or 404 if it does not exist."""
+    document = _suppliers_table.get(doc_id=supplier_id)
+    if document is None:
+        raise HTTPException(status_code=404, detail="Supplier not found.")
+    return Supplier.model_validate({**document, "id": document.doc_id})
+
+
+@app.patch("/suppliers/{supplier_id}/rate", response_model=Supplier)
+async def update_supplier_rate(
+    supplier_id: int, rate_update: SupplierRateUpdate
+) -> Supplier:
+    """Update a supplier's positive rate and record the update timestamp."""
+    document = _suppliers_table.get(doc_id=supplier_id)
+    if document is None:
+        raise HTTPException(status_code=404, detail="Supplier not found.")
+
+    updated_document = dict(document)
+    updated_document["rate"] = rate_update.rate
+    updated_document["updated_at"] = datetime.now(timezone.utc)
+    updated_supplier = Supplier.model_validate(
+        {**updated_document, "id": supplier_id}
+    )
+    _suppliers_table.update(
+        updated_supplier.model_dump(mode="json", exclude={"id"}),
+        doc_ids=[supplier_id],
+    )
+    return updated_supplier
+
+
+@app.patch("/suppliers/{supplier_id}", response_model=Supplier)
+async def update_supplier_status(
+    supplier_id: int, status_update: SupplierStatusUpdate
+) -> Supplier:
+    """Activate or suspend a supplier using a supported enum status."""
+    document = _suppliers_table.get(doc_id=supplier_id)
+    if document is None:
+        raise HTTPException(status_code=404, detail="Supplier not found.")
+
+    updated_document = dict(document)
+    updated_document["status"] = status_update.status
+    updated_document["updated_at"] = datetime.now(timezone.utc)
+    updated_supplier = Supplier.model_validate(
+        {**updated_document, "id": supplier_id}
+    )
+    _suppliers_table.update(
+        updated_supplier.model_dump(mode="json", exclude={"id"}),
+        doc_ids=[supplier_id],
+    )
+    return updated_supplier
+
+
+@app.delete("/suppliers/{supplier_id}", status_code=204)
+async def delete_supplier(supplier_id: int) -> None:
+    """Remove a supplier from the directory, or return 404 if absent."""
+    if _suppliers_table.get(doc_id=supplier_id) is None:
+        raise HTTPException(status_code=404, detail="Supplier not found.")
+    _suppliers_table.remove(doc_ids=[supplier_id])
+
+
+@app.post("/auth/token")
+async def issue_access_token(credentials: UserLogin) -> dict[str, str]:
+    """Authenticate credentials and issue a bearer token."""
+    user = user_service.get_user_by_email(credentials.email)
+    if (
+        user is None
+        or not user.is_active
+        or not verify_password(credentials.password, user.hashed_password)
+    ):
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid email or password.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return {"access_token": create_access_token(user), "token_type": "bearer"}
+
+
+@app.post("/users", response_model=UserResponse, status_code=201)
+async def create_user(user_data: UserCreate) -> UserResponse:
+    """Register a user and optional profile; new registrations always use user role."""
+    try:
+        return user_service.create_user(user_data)
+    except ValueError as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+
+
+@app.get("/users", response_model=list[UserResponse])
+async def list_users(current_user: CurrentUser) -> list[UserResponse]:
+    """List users; administrator access only."""
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Administrator role required.")
+    return user_service.list_users()
+
+
+@app.get("/users/{user_id}", response_model=UserResponse)
+async def get_user(user_id: str, current_user: CurrentUser) -> UserResponse:
+    """Get a user by ID; only the user or an administrator may access it."""
+    if current_user.id != user_id and current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Not authorized to access this user.")
+    user = user_service.get_user_response_by_id(user_id)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found.")
+    return user
+
+
+@app.put("/users/{user_id}", response_model=UserResponse)
+async def update_user(
+    user_id: str,
+    user_data: UserUpdate,
+    current_user: CurrentUser,
+) -> UserResponse:
+    """Update credentials; role changes are restricted to administrators."""
+    if current_user.id != user_id and current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Not authorized to update this user.")
+    if user_data.role is not None and current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Only administrators may change roles.")
+    try:
+        user = user_service.update_user(user_id, user_data)
+    except ValueError as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found.")
+    return user
+
+
+@app.delete("/users/{user_id}", status_code=204)
+async def delete_user(user_id: str, current_user: CurrentUser) -> None:
+    """Delete a user and linked profile; only self or administrator may do so."""
+    if current_user.id != user_id and current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Not authorized to delete this user.")
+    if not user_service.delete_user(user_id):
+        raise HTTPException(status_code=404, detail="User not found.")
 
 
 def _build_api_report(summary: dict[str, object]) -> dict[str, object]:
