@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
 
     return [
       {
+        source: "/api/suppliers/:path*",
+        destination: `${apiOrigin.replace(/\/$/, "")}/suppliers/:path*`,
+      },
+      {
         source: "/api/incidents/:path*",
         destination: `${apiOrigin.replace(/\/$/, "")}/api/incidents/:path*`,
       },

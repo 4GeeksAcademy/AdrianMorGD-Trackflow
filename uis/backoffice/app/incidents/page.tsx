@@ -134,6 +134,7 @@ export default function IncidentsPage() {
         </Link>
         <nav className="mt-10 flex gap-2 overflow-x-auto lg:block" aria-label="Operations navigation">
           <Link href="/" className="mb-2 block whitespace-nowrap rounded-xl px-4 py-3 text-sm font-semibold text-white/60 transition hover:bg-white/5 hover:text-white">Overview</Link>
+          <Link href="/suppliers" className="mb-2 block whitespace-nowrap rounded-xl px-4 py-3 text-sm font-semibold text-white/60 transition hover:bg-white/5 hover:text-white">Supplier directory</Link>
           <Link href="/incidents" aria-current="page" className="mb-2 block whitespace-nowrap rounded-xl bg-white/10 px-4 py-3 text-sm font-semibold text-mint">Incident analysis</Link>
         </nav>
         <div className="mt-auto hidden rounded-2xl border border-white/10 bg-white/5 p-4 lg:block">

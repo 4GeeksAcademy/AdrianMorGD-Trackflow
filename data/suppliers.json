@@ -1,0 +1,1 @@
+{"suppliers": {"2": {"name": "Zimma", "country": "United States", "product_categories": ["Fashion"], "rate": 3.0, "updated_at": "2026-11-20T01:46:30.654024Z", "status": "suspended"}, "4": {"name": "Ulivar", "country": "Spain", "product_categories": ["Fashion"], "rate": 4.01, "updated_at": "2026-11-20T01:40:27.647843Z", "status": "active"}}}

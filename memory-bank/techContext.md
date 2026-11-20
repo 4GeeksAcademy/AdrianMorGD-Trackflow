@@ -6,6 +6,15 @@ El briefing de negocio define las necesidades y restricciones de TrackFlow, pero
 
 ## Stack comprobado en el repositorio
 
+### API y persistencia de autenticación
+
+- La API backend está construida con **FastAPI** y usa **Pydantic** para sus modelos.
+- El modelo `User` se persiste actualmente con **TinyDB** como almacenamiento local de prototipo. Incluye únicamente `id`, `email`, `hashed_password`, `is_active`, `role` y `created_at`; no almacena nombre visible ni datos de contacto.
+- El perfil opcional (`name`, `phone`, `address`) vive en un modelo/repositorio `Profile` aparte, vinculado mediante `user_id`; las tablas `users` y `profiles` comparten la instancia local de TinyDB.
+- Las contraseñas se procesan con **pwdlib/Argon2**. El API emite JWT HS256 mediante **PyJWT** en `POST /auth/token`; `TRACKFLOW_JWT_SECRET` debe configurarse externamente y no existe secreto predeterminado.
+- `/users` expone registro público (rol inicial fijo `user`) y operaciones protegidas con Bearer token. El listado está limitado a admin; las operaciones por ID se limitan al usuario propietario o un admin, y solo admin puede cambiar roles.
+- TinyDB no es una decisión de base de datos para producción. La base transaccional definitiva y el almacenamiento productivo de usuarios siguen pendientes de selección y aprobación.
+
 ### Aplicación de interfaz
 
 - **Next.js 16.3.5**, con App Router por la estructura del proyecto.
