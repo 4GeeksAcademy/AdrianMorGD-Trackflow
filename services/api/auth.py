@@ -9,7 +9,7 @@ from typing import Annotated, Any
 import jwt
 from dotenv import load_dotenv
 from fastapi import Depends, HTTPException, Request, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pwdlib import PasswordHash
 
 from services.api.users import User
@@ -29,7 +29,7 @@ if ACCESS_TOKEN_EXPIRES_MINUTES <= 0:
     raise RuntimeError("ACCESS_TOKEN_EXPIRES_MINUTES must be a positive integer.")
 
 password_hash = PasswordHash.recommended()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+bearer_scheme = HTTPBearer(auto_error=False)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -50,7 +50,10 @@ def create_access_token(user: User) -> str:
 
 
 def get_current_user(
-    token: Annotated[str, Depends(oauth2_scheme)], request: Request
+    credentials: Annotated[
+        HTTPAuthorizationCredentials | None, Depends(bearer_scheme)
+    ],
+    request: Request,
 ) -> User:
     """Validate the bearer JWT and load its active user from persistence."""
     credentials_error = HTTPException(
@@ -58,6 +61,9 @@ def get_current_user(
         detail="Invalid or expired authentication token.",
         headers={"WWW-Authenticate": "Bearer"},
     )
+    if credentials is None:
+        raise credentials_error
+    token = credentials.credentials
     if not JWT_SECRET:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,

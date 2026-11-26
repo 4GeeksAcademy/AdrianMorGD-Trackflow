@@ -183,6 +183,14 @@ class AnalyzeIncidentsEndpointTests(unittest.TestCase):
         self.assertEqual(analyze_response.status_code, 401)
         self.assertEqual(export_response.status_code, 401)
 
+    def test_openapi_uses_http_bearer_for_protected_routes(self) -> None:
+        response = self.client.get("/openapi.json")
+
+        self.assertEqual(response.status_code, 200)
+        security_schemes = response.json()["components"]["securitySchemes"]
+        self.assertIn("HTTPBearer", security_schemes)
+        self.assertEqual(security_schemes["HTTPBearer"]["scheme"], "bearer")
+
     def test_versioned_incident_routes_coexist_with_legacy_paths(self) -> None:
         headers = self.authorization(str(self.register_user()["id"]))
         versioned_response = self.client.post(
