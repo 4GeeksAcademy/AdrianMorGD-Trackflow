@@ -6,13 +6,14 @@ from datetime import datetime, timezone
 from tinydb import TinyDB
 from tinydb.storages import MemoryStorage
 
-from services.api.users import User, UserRepository, UserRole
+from services.api.user_tinydb import TinyDBUserRepository
+from services.api.users import User, UserRole
 
 
 class UserModelTests(unittest.TestCase):
     def setUp(self) -> None:
         self.database = TinyDB(storage=MemoryStorage)
-        self.repository = UserRepository(self.database)
+        self.repository = TinyDBUserRepository(self.database)
 
     def tearDown(self) -> None:
         self.database.close()

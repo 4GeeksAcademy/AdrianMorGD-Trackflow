@@ -10,6 +10,10 @@ from fastapi.testclient import TestClient
 from tinydb import TinyDB
 
 from services.api import main as api_main
+from services.api.auth import create_access_token
+from services.api.supplier_service import SupplierService
+from services.api.supplier_tinydb import TinyDBSupplierRepository
+from services.api.users import User
 
 
 class SupplierEndpointTests(unittest.TestCase):
@@ -17,12 +21,31 @@ class SupplierEndpointTests(unittest.TestCase):
         self.temp_dir = tempfile.TemporaryDirectory()
         self.database = TinyDB(Path(self.temp_dir.name) / "suppliers.json")
         self.table = self.database.table("suppliers")
-        self.table_patch = patch.object(api_main, "_suppliers_table", self.table)
-        self.table_patch.start()
-        self.client = TestClient(api_main.app)
+        self.service_patch = patch.object(
+            api_main.app.state,
+            "supplier_service",
+            SupplierService(TinyDBSupplierRepository(self.table)),
+        )
+        self.service_patch.start()
+        self.auth_secret_patch = patch(
+            "services.api.auth.JWT_SECRET", "test-secret-value-with-32-bytes-minimum"
+        )
+        self.auth_secret_patch.start()
+        self.test_user = User(email="supplier-tests@example.com", hashed_password="unused")
+        self.user_lookup_patch = patch.object(
+            api_main.user_service, "get_user_by_id", return_value=self.test_user
+        )
+        self.user_lookup_patch.start()
+        token = create_access_token(self.test_user)
+        self.client = TestClient(
+            api_main.app,
+            headers={"Authorization": f"Bearer {token}"},
+        )
 
     def tearDown(self) -> None:
-        self.table_patch.stop()
+        self.user_lookup_patch.stop()
+        self.auth_secret_patch.stop()
+        self.service_patch.stop()
         self.database.close()
         self.temp_dir.cleanup()
 
@@ -44,6 +67,21 @@ class SupplierEndpointTests(unittest.TestCase):
         self.assertEqual(created["name"], "Northstar Textiles")
         self.assertEqual(created["status"], "active")
         self.assertEqual(self.table.get(doc_id=created["id"])["name"], created["name"])
+
+    def test_supplier_routes_reject_requests_without_authentication(self) -> None:
+        anonymous_client = TestClient(api_main.app)
+        responses = (
+            anonymous_client.post("/suppliers", json=self.valid_supplier()),
+            anonymous_client.get("/suppliers"),
+            anonymous_client.get("/suppliers/1"),
+            anonymous_client.patch("/suppliers/1/rate", json={"rate": 3.0}),
+            anonymous_client.patch("/suppliers/1", json={"status": "suspended"}),
+            anonymous_client.delete("/suppliers/1"),
+        )
+
+        for response in responses:
+            with self.subTest(path=response.request.url.path, method=response.request.method):
+                self.assertEqual(response.status_code, 401, response.text)
 
     def test_create_supplier_rejects_invalid_inputs_with_422(self) -> None:
         invalid_payloads = (

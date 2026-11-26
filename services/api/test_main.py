@@ -24,7 +24,7 @@ VALID_ROW = (
 class AnalyzeIncidentsEndpointTests(unittest.TestCase):
     def setUp(self) -> None:
         self.client = TestClient(app)
-        api_main._last_analysis = None
+        api_main.app.state.incident_service = api_main.IncidentService()
         api_main._users_database.drop_tables()
         self.jwt_secret = patch("services.api.auth.JWT_SECRET", "test-secret-value-with-32-bytes-minimum")
         self.jwt_secret.start()
@@ -99,6 +99,23 @@ class AnalyzeIncidentsEndpointTests(unittest.TestCase):
         response = self.client.get(f"/users/{created['id']}")
         self.assertEqual(response.status_code, 401)
 
+    def test_sensitive_user_and_profile_routes_require_authentication(self) -> None:
+        created = self.register_user()
+        user_id = str(created["id"])
+        protected_requests = (
+            self.client.get("/users"),
+            self.client.get(f"/users/{user_id}"),
+            self.client.put(f"/users/{user_id}", json={"email": "changed@example.com"}),
+            self.client.delete(f"/users/{user_id}"),
+            self.client.get("/auth/me"),
+            self.client.get("/profiles/me"),
+            self.client.put("/profiles/me", json={"phone": "+1-555-0199"}),
+        )
+
+        for response in protected_requests:
+            with self.subTest(path=response.request.url.path, method=response.request.method):
+                self.assertEqual(response.status_code, 401, response.text)
+
     def test_regular_user_can_access_own_record_but_not_another_user(self) -> None:
         owner = self.register_user("owner@example.com")
         other = self.register_user("other@example.com")
@@ -145,6 +162,7 @@ class AnalyzeIncidentsEndpointTests(unittest.TestCase):
         response = self.client.post(
             "/api/incidents/analyze",
             files={"file": ("incidents.csv", CSV_HEADER + VALID_ROW, "text/csv")},
+            headers=self.authorization(str(self.register_user()["id"])),
         )
 
         self.assertEqual(response.status_code, 200)
@@ -154,6 +172,42 @@ class AnalyzeIncidentsEndpointTests(unittest.TestCase):
         self.assertEqual(report["invalid_records"], 0)
         self.assertEqual(report["satisfaction"]["average_score"], 4.0)
         self.assertNotIn("customer@example.com", response.text)
+
+    def test_incident_routes_require_authentication(self) -> None:
+        analyze_response = self.client.post(
+            "/api/incidents/analyze",
+            files={"file": ("incidents.csv", CSV_HEADER + VALID_ROW, "text/csv")},
+        )
+        export_response = self.client.get("/api/incidents/results/export")
+
+        self.assertEqual(analyze_response.status_code, 401)
+        self.assertEqual(export_response.status_code, 401)
+
+    def test_versioned_incident_routes_coexist_with_legacy_paths(self) -> None:
+        headers = self.authorization(str(self.register_user()["id"]))
+        versioned_response = self.client.post(
+            "/api/v1/incidents/analyze",
+            files={"file": ("incidents.csv", CSV_HEADER + VALID_ROW, "text/csv")},
+            headers=headers,
+        )
+
+        self.assertEqual(versioned_response.status_code, 200, versioned_response.text)
+        legacy_export = self.client.get(
+            "/api/incidents/results/export", headers=headers
+        )
+        self.assertEqual(legacy_export.status_code, 200, legacy_export.text)
+        self.assertIn("total_records,1", legacy_export.text)
+
+        legacy_response = self.client.post(
+            "/api/incidents/analyze",
+            files={"file": ("incidents.csv", CSV_HEADER + VALID_ROW, "text/csv")},
+            headers=headers,
+        )
+        versioned_export = self.client.get(
+            "/api/v1/incidents/results/export", headers=headers
+        )
+        self.assertEqual(legacy_response.status_code, 200, legacy_response.text)
+        self.assertEqual(versioned_export.status_code, 200, versioned_export.text)
 
     def test_allows_backoffice_origin_for_browser_api_requests(self) -> None:
         response = self.client.options(
@@ -175,6 +229,7 @@ class AnalyzeIncidentsEndpointTests(unittest.TestCase):
         response = self.client.post(
             "/api/incidents/analyze",
             files={"file": ("incidents.csv", CSV_HEADER + invalid_row, "text/csv")},
+            headers=self.authorization(str(self.register_user()["id"])),
         )
 
         self.assertEqual(response.status_code, 200)
@@ -187,6 +242,7 @@ class AnalyzeIncidentsEndpointTests(unittest.TestCase):
         response = self.client.post(
             "/api/incidents/analyze",
             files={"file": ("incidents.csv", "incident_id,date\n", "text/csv")},
+            headers=self.authorization(str(self.register_user()["id"])),
         )
 
         self.assertEqual(response.status_code, 400)
@@ -196,6 +252,7 @@ class AnalyzeIncidentsEndpointTests(unittest.TestCase):
         response = self.client.post(
             "/api/incidents/analyze",
             files={"file": ("empty.csv", "", "text/csv")},
+            headers=self.authorization(str(self.register_user()["id"])),
         )
 
         self.assertEqual(response.status_code, 400)
@@ -205,6 +262,7 @@ class AnalyzeIncidentsEndpointTests(unittest.TestCase):
         response = self.client.post(
             "/api/incidents/analyze",
             files={"file": ("incidents.csv", CSV_HEADER, "text/csv")},
+            headers=self.authorization(str(self.register_user()["id"])),
         )
 
         self.assertEqual(response.status_code, 400)
@@ -215,6 +273,7 @@ class AnalyzeIncidentsEndpointTests(unittest.TestCase):
         response = self.client.post(
             "/api/incidents/analyze",
             files={"file": ("incidents.csv", malformed_csv, "text/csv")},
+            headers=self.authorization(str(self.register_user()["id"])),
         )
 
         self.assertEqual(response.status_code, 400)
@@ -224,6 +283,7 @@ class AnalyzeIncidentsEndpointTests(unittest.TestCase):
         response = self.client.post(
             "/api/incidents/analyze",
             files={"file": ("incidents.csv", b"\xff\xfe\x00", "text/csv")},
+            headers=self.authorization(str(self.register_user()["id"])),
         )
 
         self.assertEqual(response.status_code, 400)
@@ -233,24 +293,33 @@ class AnalyzeIncidentsEndpointTests(unittest.TestCase):
         response = self.client.post(
             "/api/incidents/analyze",
             files={"file": ("incidents.txt", "some text", "text/plain")},
+            headers=self.authorization(str(self.register_user()["id"])),
         )
 
         self.assertEqual(response.status_code, 415)
         self.assertIn("Upload a CSV file using multipart/form-data", response.json()["detail"])
 
     def test_export_returns_404_until_analysis_exists(self) -> None:
-        response = self.client.get("/api/incidents/results/export")
+        response = self.client.get(
+            "/api/incidents/results/export",
+            headers=self.authorization(str(self.register_user()["id"])),
+        )
 
         self.assertEqual(response.status_code, 404)
 
     def test_export_downloads_last_analysis_as_csv_without_personal_data(self) -> None:
+        headers = self.authorization(str(self.register_user()["id"]))
         analysis_response = self.client.post(
             "/api/incidents/analyze",
             files={"file": ("incidents.csv", CSV_HEADER + VALID_ROW, "text/csv")},
+            headers=headers,
         )
         self.assertEqual(analysis_response.status_code, 200)
 
-        response = self.client.get("/api/incidents/results/export")
+        response = self.client.get(
+            "/api/incidents/results/export",
+            headers=headers,
+        )
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("text/csv", response.headers["content-type"])

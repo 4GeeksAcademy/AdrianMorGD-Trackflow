@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from pwdlib import PasswordHash
 
+from services.api.user_port import ProfileRepository, UserRepository
 from services.api.users import (
     Profile,
     ProfileCreate,
-    ProfileRepository,
+    ProfileUpdate,
     User,
     UserCreate,
-    UserRepository,
     UserResponse,
     UserUpdate,
 )
@@ -58,6 +58,22 @@ class UserService:
     def get_user_by_email(self, email: str) -> User | None:
         """Get a user by email."""
         return self._repository.get_by_email(email)
+
+    def get_profile(self, user_id: str) -> Profile:
+        """Get or create the profile linked to an authentication user."""
+        return self._get_or_create_profile(user_id)
+
+    def update_profile(
+        self, user_id: str, profile_data: ProfileUpdate
+    ) -> Profile:
+        """Update only profile fields supplied by the authenticated owner."""
+        profile = self._get_or_create_profile(user_id)
+        changes = profile_data.model_dump(exclude_unset=True)
+        updated_profile = Profile.model_validate(
+            {**profile.model_dump(), **changes}
+        )
+        self._profile_repository.update(updated_profile)
+        return updated_profile
 
     def update_user(self, user_id: str, user_data: UserUpdate) -> UserResponse | None:
         """Update the supplied user fields and return the updated user."""

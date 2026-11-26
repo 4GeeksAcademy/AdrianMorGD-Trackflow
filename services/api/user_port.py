@@ -1,0 +1,33 @@
+"""Persistence contracts used by user and profile application services."""
+
+from typing import Protocol
+
+from services.api.users import Profile, User
+
+
+class UserRepository(Protocol):
+    """Operations needed to persist authentication identities."""
+
+    def create(self, user: User) -> User: ...
+
+    def get_by_id(self, user_id: str) -> User | None: ...
+
+    def get_by_email(self, email: str) -> User | None: ...
+
+    def get_all(self) -> list[User]: ...
+
+    def update(self, user: User) -> bool: ...
+
+    def delete(self, user_id: str) -> bool: ...
+
+
+class ProfileRepository(Protocol):
+    """Operations needed to persist user profile data independently."""
+
+    def create(self, profile: Profile) -> Profile: ...
+
+    def get_by_user_id(self, user_id: str) -> Profile | None: ...
+
+    def update(self, profile: Profile) -> bool: ...
+
+    def delete_by_user_id(self, user_id: str) -> bool: ...
