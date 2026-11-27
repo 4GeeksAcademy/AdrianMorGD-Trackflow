@@ -2,15 +2,15 @@
 
 from __future__ import annotations
 
-from pwdlib import PasswordHash
+from passlib.hash import bcrypt
 
+from services.api.user_port import ProfileRepository, UserRepository
 from services.api.users import (
     Profile,
     ProfileCreate,
-    ProfileRepository,
+    ProfileUpdate,
     User,
     UserCreate,
-    UserRepository,
     UserResponse,
     UserUpdate,
 )
@@ -23,11 +23,9 @@ class UserService:
         self,
         repository: UserRepository,
         profile_repository: ProfileRepository,
-        password_hasher: PasswordHash | None = None,
     ) -> None:
         self._repository = repository
         self._profile_repository = profile_repository
-        self._password_hasher = password_hasher or PasswordHash.recommended()
 
     def create_user(self, user_data: UserCreate) -> UserResponse:
         """Hash password, create user and profile, and return safe response."""
@@ -38,7 +36,7 @@ class UserService:
 
         user = User(
             email=user_data.email,
-            hashed_password=self._password_hasher.hash(user_data.password),
+            hashed_password=bcrypt.hash(user_data.password),
         )
         self._repository.create(user)
         profile_data = ProfileCreate(
@@ -59,6 +57,22 @@ class UserService:
         """Get a user by email."""
         return self._repository.get_by_email(email)
 
+    def get_profile(self, user_id: str) -> Profile:
+        """Get or create the profile linked to an authentication user."""
+        return self._get_or_create_profile(user_id)
+
+    def update_profile(
+        self, user_id: str, profile_data: ProfileUpdate
+    ) -> Profile:
+        """Update only profile fields supplied by the authenticated owner."""
+        profile = self._get_or_create_profile(user_id)
+        changes = profile_data.model_dump(exclude_unset=True)
+        updated_profile = Profile.model_validate(
+            {**profile.model_dump(), **changes}
+        )
+        self._profile_repository.update(updated_profile)
+        return updated_profile
+
     def update_user(self, user_id: str, user_data: UserUpdate) -> UserResponse | None:
         """Update the supplied user fields and return the updated user."""
         user = self.get_user_by_id(user_id)
@@ -70,7 +84,7 @@ class UserService:
         if password is not None:
             if len(password) < 8:
                 raise ValueError("Password must contain at least 8 characters.")
-            changes["hashed_password"] = self._password_hasher.hash(password)
+            changes["hashed_password"] = bcrypt.hash(password)
         if changes.get("email") is not None:
             existing_user = self.get_user_by_email(changes["email"])
             if existing_user is not None and existing_user.id != user_id:
