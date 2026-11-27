@@ -10,7 +10,7 @@ import jwt
 from dotenv import load_dotenv
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from pwdlib import PasswordHash
+from passlib.hash import bcrypt
 
 from services.api.users import User
 
@@ -28,13 +28,12 @@ except ValueError as exc:
 if ACCESS_TOKEN_EXPIRES_MINUTES <= 0:
     raise RuntimeError("ACCESS_TOKEN_EXPIRES_MINUTES must be a positive integer.")
 
-password_hash = PasswordHash.recommended()
 bearer_scheme = HTTPBearer(auto_error=False)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Check an untrusted password against its stored adaptive hash."""
-    return password_hash.verify(plain_password, hashed_password)
+    return bcrypt.verify(plain_password, hashed_password)
 
 
 def create_access_token(user: User) -> str:

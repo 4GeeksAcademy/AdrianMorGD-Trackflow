@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from pwdlib import PasswordHash
+from passlib.hash import bcrypt
 
 from services.api.user_port import ProfileRepository, UserRepository
 from services.api.users import (
@@ -23,11 +23,9 @@ class UserService:
         self,
         repository: UserRepository,
         profile_repository: ProfileRepository,
-        password_hasher: PasswordHash | None = None,
     ) -> None:
         self._repository = repository
         self._profile_repository = profile_repository
-        self._password_hasher = password_hasher or PasswordHash.recommended()
 
     def create_user(self, user_data: UserCreate) -> UserResponse:
         """Hash password, create user and profile, and return safe response."""
@@ -38,7 +36,7 @@ class UserService:
 
         user = User(
             email=user_data.email,
-            hashed_password=self._password_hasher.hash(user_data.password),
+            hashed_password=bcrypt.hash(user_data.password),
         )
         self._repository.create(user)
         profile_data = ProfileCreate(
@@ -86,7 +84,7 @@ class UserService:
         if password is not None:
             if len(password) < 8:
                 raise ValueError("Password must contain at least 8 characters.")
-            changes["hashed_password"] = self._password_hasher.hash(password)
+            changes["hashed_password"] = bcrypt.hash(password)
         if changes.get("email") is not None:
             existing_user = self.get_user_by_email(changes["email"])
             if existing_user is not None and existing_user.id != user_id:

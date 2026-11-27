@@ -4,6 +4,7 @@ import unittest
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
+from passlib.hash import bcrypt
 
 from services.api import main as api_main
 from services.api.auth import create_access_token
@@ -72,6 +73,9 @@ class AnalyzeIncidentsEndpointTests(unittest.TestCase):
         self.assertIsNotNone(user)
         assert user is not None
         self.assertNotEqual(user.hashed_password, "correct-horse-battery")
+        self.assertTrue(user.hashed_password.startswith("$2"))
+        self.assertTrue(bcrypt.verify("correct-horse-battery", user.hashed_password))
+        self.assertFalse(bcrypt.verify("wrong-password", user.hashed_password))
 
     def test_create_user_rejects_unsupported_role(self) -> None:
         response = self.client.post(
@@ -93,6 +97,38 @@ class AnalyzeIncidentsEndpointTests(unittest.TestCase):
 
         self.assertEqual(first_response.status_code, 201)
         self.assertEqual(duplicate_response.status_code, 409)
+
+    def test_password_update_rehashes_and_new_password_can_login(self) -> None:
+        created = self.register_user()
+        user_id = str(created["id"])
+        user = api_main.user_service.get_user_by_id(user_id)
+        assert user is not None
+        original_hash = user.hashed_password
+        headers = self.authorization(user_id)
+
+        update_response = self.client.put(
+            f"/users/{user_id}",
+            json={"password": "new-correct-password"},
+            headers=headers,
+        )
+        updated_user = api_main.user_service.get_user_by_id(user_id)
+        wrong_password_response = self.client.post(
+            "/auth/login",
+            json={"email": "new@example.com", "password": "correct-horse-battery"},
+        )
+        login_response = self.client.post(
+            "/auth/login",
+            json={"email": "new@example.com", "password": "new-correct-password"},
+        )
+
+        self.assertEqual(update_response.status_code, 200, update_response.text)
+        self.assertIsNotNone(updated_user)
+        assert updated_user is not None
+        self.assertNotEqual(updated_user.hashed_password, original_hash)
+        self.assertTrue(updated_user.hashed_password.startswith("$2"))
+        self.assertTrue(bcrypt.verify("new-correct-password", updated_user.hashed_password))
+        self.assertEqual(wrong_password_response.status_code, 401)
+        self.assertEqual(login_response.status_code, 200, login_response.text)
 
     def test_user_routes_require_authentication(self) -> None:
         created = self.register_user()
